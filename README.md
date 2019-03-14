@@ -16,7 +16,7 @@ Some technical notes about the portal system will be compiled on the
 
 # Docker Deployment of the DivSeek Canada Portal
 
-The DivSeek Canada Portal is being designed to run within a **Docker** container when the application is run on a Linux server or virtual machine. Thus, some system preparation to run Docker is required.
+The DivSeek Canada Portal is being designed to run within a system of **Docker** containers when the application is run on a Linux server or virtual machine. Thus, some system preparation to run Docker is required.
 
 ## Configuration for Cloud Deployment
 
