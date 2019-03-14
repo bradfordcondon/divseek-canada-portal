@@ -69,9 +69,9 @@ SSH terminal session, as follows (where '$' is the Linux Bash CLI terminal promp
     # Otherwise, you'll need to delete it first, then create the symlink
     $ sudo ln -s /opt/docker /var/lib  
     
-Now, you can proceed to install Docker and Docker Compose.
+It is also recommended that a separate additional volume for each crop dataset deployed be created, following the above instructions. A 500 GB volume is likely to be needed for this given the genomic large data sets involved. Also, you can attach volumes containing the raw input data (e.g. VCF files) as you need (Note: you should obviously not run the ```mkfs``` command afresh on any volumes which already have data!) 
 
-It is also recommended that a separate additional volume for each crop dataset deployed be created, following the above instructions. A 500 GB volume is likely to be needed for this given the genomic large data sets involved.  Also, you may wish to attached volumes containing the raw input data (e.g. VCF files) as you need. You should configure /etc/fstab for boot mounting of the new volumes:
+After completing the above steps, you should configure ```/etc/fstab``` file for system boot up mounting of the new volumes:
     
     # These volumes need to be auto mounted upon each reboot of the system
     # so you should (carefully) add them to the Linux /etc/fstab file 
@@ -79,6 +79,8 @@ It is also recommended that a separate additional volume for each crop dataset d
     /dev/vdb        /opt    ext4    rw,relatime     0       0
     /dev/vdc        /opt/divseekcanada/data/downy-mildew    ext4    rw,relatime     0       0
     /dev/vdd        /opt/divseekcanada/Sunflower    ext4    rw,relatime     0       0
+
+Now, you can proceed to install Docker and Docker Compose.
 
 ## Installation of Docker
 
