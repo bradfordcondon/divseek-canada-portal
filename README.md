@@ -76,6 +76,9 @@ sudo mkdir -p /opt/divseekcanada/data/downy-mildew
 sudo mount /dev/vdc /opt/divseekcanada/data/downy-mildew
 sudo mkdir -p /opt/divseekcanada/Sunflower
 sudo mount /dev/vdd /opt/divseekcanada/Sunflower
+
+# test the fstab mount with a 'fake' mounting
+sudo mount -vf
 ```
 
 After completing the above steps, you should configure ```/etc/fstab``` file for system boot up mounting of the new volumes:
