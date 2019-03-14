@@ -71,6 +71,15 @@ SSH terminal session, as follows (where '$' is the Linux Bash CLI terminal promp
     
 Now, you can proceed to install Docker and Docker Compose.
 
+It is also recommended that a separate additional volume for each crop dataset deployed be created, following the above instructions. A 500 GB volume is likely to be needed for this given the genomic large data sets involved.  Also, you may wish to attached volumes containing the raw input data (e.g. VCF files) as you need. You should configure /etc/fstab for boot mounting of the new volumes:
+    
+    # These volumes need to be auto mounted upon each reboot of the system
+    # so you should (carefully) add them to the Linux /etc/fstab file 
+    # of the server, something like the following text entries (customize for your crop):
+    /dev/vdb        /opt    ext4    rw,relatime     0       0
+    /dev/vdc        /opt/divseekcanada/data/downy-mildew    ext4    rw,relatime     0       0
+    /dev/vdd        /opt/divseekcanada/Sunflower    ext4    rw,relatime     0       0
+
 ## Installation of Docker
 
 To run Docker, you'll obviously need to [install Docker first](https://docs.docker.com/engine/installation/) in your target Linux operating environment (bare metal server or virtual machine running Linux).
