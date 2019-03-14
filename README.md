@@ -199,7 +199,7 @@ Next, you should configure git with your Git repository metadata and, perhaps, a
     git config --global user.email "your-email"
     git config --global credential.helper cache
 
-Then, you can clone the project. A convenient location for the code is in a folder under **/opt**:
+Then, you can clone the project. A convenient location for the code is in a folder under **/opt/divseekcanada**:
 
     cd /opt/divseekcanada
     git clone https://github.com/DivSeek-Canada/divseek-canada-portal 
