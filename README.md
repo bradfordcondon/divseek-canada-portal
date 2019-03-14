@@ -169,11 +169,7 @@ resource limit, reported by the following error message:
 
     max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
 
-This solution to this is to run the following on the command line of your Linux system hosting docker:
-
-    sudo sysctl -w vm.max_map_count=262144
-
-To make it persistent, you can add this line:
+This solution to this is to add this line:
 
     vm.max_map_count=262144
 
