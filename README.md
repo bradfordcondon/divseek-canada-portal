@@ -162,7 +162,63 @@ in your **/etc/sysctl.conf** file on the host system and run
 
 to reload configuration with new value.
 
-# Galaxy/Apollo
+# Installing the DivSeek Canada Portal codebase
+
+This project resides in [this Github project repository](https://github.com/DivSeek-Canada/divseek-canada-portal).
+
+First, ensure that you have the git client installed (here again, we assume Ubuntu; '$' is the bash CLI prompt):
+
+    $ sudo apt update
+    $ sudo apt install git
+
+Next, you should configure git with your Git repository metadata and, perhaps, activate credential management (we use 'cache' mode here to avoid storing credentials in plain text on disk)
+
+    $ git config --global user.name "your-git-account"
+    # git config --global user.email "your-email"
+    $ git config --global credential.helper cache
+
+Then, you can clone the project. A convenient location for the code is in a folder under **/opt**:
+
+    $ cd /opt
+    $ sudo mkdir divseekcanada
+    $ sudo chown ubuntu:ubuntu divseekcanada  # ensuring easy $USER access to the code...
+    $ cd divseekcanada
+    $ git clone https://github.com/DivSeek-Canada/divseek-canada-portal 
+
+# Deployment of the Portal System
+
+As of March 2019, we are porting the DivSeek Canada Portal over to use the more fully-featured 
+[Dockerized GMOD Stack](https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment). 
+
+We created a customized Docker Compose build file (**docker-compose.yml**) on the divseek-canada-build branch from the
+original dockerized-gmod-deployment master version.  This file is customized for (crop) site specific needs using environment variables.
+
+To customize a given crop-specific site, need to copy the **template.env** into **.env** then customize the contents to
+point to your actual portal hostname.
+
+The NGINX proxy is also configured during the docker comopose build using a **default.conf** file in the **nginx**
+subdirectory. The GMOD deployment default is to show 'galaxy' on the hostname resolution but there is an alternate 
+template for a  'galaxy-tripal' swapped proxy. One or the other template (under the **nginx** subdirectory)
+should be copied into **nginx/default.conf**.
+
+The general project launch steps noted in the  [GMOD stack README](./docker-gmod/README.md) are 
+otherwise followed with the revised YML file specified:
+
+```console
+$ docker-compose pull # Pull all images
+$ docker-compose up -d apollo_db chado # Launch the DBs
+```
+
+In a new terminal, in the same folder, run `docker-compose -f gmod-docker-compose.yml logs -f` in order to
+watch what is going on.
+
+```
+$ docker-compose up -d --build tripal # Wait for tripal to come up and install Chado.
+$ # It takes a few minutes. I believe you'll see an apache error when ready.
+$ docker-compose up -d --build # This will bring up the rest of the services.
+```
+
+# Deeper Details about the GMOD Deployment (from the original GGA repository)
 
 This docker-compose.yml file specifies all of the infrastructure needed to run
 the current iteration of GMOD products.
