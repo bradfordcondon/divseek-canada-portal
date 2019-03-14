@@ -187,14 +187,10 @@ Then, you can clone the project. A convenient location for the code is in a fold
 
 # Deployment of the Portal System
 
-As of March 2019, we are porting the DivSeek Canada Portal over to use the more fully-featured 
-[Dockerized GMOD Stack](https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment). 
+As of March 2019, the DivSeek Canada Portal customizes a git fork of the 
+[Galaxy Genome Annotation "Dockerized GMOD" code base](https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment). 
 
-We created a customized Docker Compose build file (**docker-compose.yml**) on the divseek-canada-build branch from the
-original dockerized-gmod-deployment master version.  This file is customized for (crop) site specific needs using environment variables.
-
-To customize a given crop-specific site, need to copy the **template.env** into **.env** then customize the contents to
-point to your actual portal hostname.
+The core of the customization is in the Docker Compose build file (**docker-compose.yml**) on the **divseek-canada-build** branch.  This file is customized for (crop) site specific needs using environment variables defined in a **.env** file. That is, to customize a given crop-specific site, need to copy the **template.env** into **.env** then customize the contents to point to your actual portal hostname.
 
 The NGINX proxy is also configured during the docker comopose build using a **default.conf** file in the **nginx**
 subdirectory. The GMOD deployment default is to show 'galaxy' on the hostname resolution but there is an alternate 
@@ -209,7 +205,7 @@ $ docker-compose pull # Pull all images
 $ docker-compose up -d apollo_db chado # Launch the DBs
 ```
 
-In a new terminal, in the same folder, run `docker-compose -f gmod-docker-compose.yml logs -f` in order to
+In a new terminal, in the same folder, run `docker-compose logs -f` in order to
 watch what is going on.
 
 ```
@@ -218,7 +214,7 @@ $ # It takes a few minutes. I believe you'll see an apache error when ready.
 $ docker-compose up -d --build # This will bring up the rest of the services.
 ```
 
-# Deeper Details about the GMOD Deployment (from the original GGA repository)
+# Deeper Details about the GMOD Deployment (copied over from the original GGA repository)
 
 This docker-compose.yml file specifies all of the infrastructure needed to run
 the current iteration of GMOD products.
