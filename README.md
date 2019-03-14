@@ -69,7 +69,14 @@ SSH terminal session, as follows (where '$' is the Linux Bash CLI terminal promp
     # Otherwise, you'll need to delete it first, then create the symlink
     $ sudo ln -s /opt/docker /var/lib  
     
-It is also recommended that a separate additional volume for each crop dataset deployed be created, following the above instructions. A 500 GB volume is likely to be needed for this given the genomic large data sets involved. Also, you can attach volumes containing the raw input data (e.g. VCF files) as you need (Note: you should obviously not run the ```mkfs``` command afresh on any volumes which already have data!) 
+It is also recommended that a separate additional volume for each crop dataset deployed be created, following the above instructions.  A 500 GB volume is likely to be needed for this given the genomic large data sets involved. Also, you can attach volumes containing the raw input data (e.g. VCF files) as you need (Note: you should obviously not run the ```mkfs``` command afresh on any volumes which already have data!)  It is recommended first that you create a subdirectory ```/opt/divseekcanada``` then mount these additional volumes in that subdirectory, namely something like the following:
+
+```
+sudo mkdir -p /opt/divseekcanada/data/downy-mildew
+sudo mount /dev/vdc /opt/divseekcanada/data/downy-mildew
+sudo mkdir -p /opt/divseekcanada/Sunflower
+sudo mount /dev/vdd /opt/divseekcanada/Sunflower
+```
 
 After completing the above steps, you should configure ```/etc/fstab``` file for system boot up mounting of the new volumes:
     
