@@ -1,23 +1,28 @@
-version: '2'
+version: '3'
 services:
 
   proxy: ## Proxy Image
     image: nginx:latest
     ports:
         - "8200:80"
-    links:
-        - remoteuser
-        - apollo
-        - galaxy
-        - tripal
-        #- ngadmin
-        - chado_jb
-        - jbrowse
-        - jbrowse-graphql
-        - postgrest
-        #- postgrest_tripal
-        - postgraphql
-        - pgadmin4
+    #
+    # deprecating links and referring to 'divseek' network?
+    #
+    #links:
+    #   - remoteuser
+    #    - apollo
+    #    - galaxy
+    #    - tripal
+    #    #- ngadmin
+    #    - chado_jb
+    #    - jbrowse
+    #    - jbrowse-graphql
+    #    - postgrest
+    #    #- postgrest_tripal
+    #    - postgraphql
+    #    - pgadmin4
+    networks:
+      divseek:
     volumes:
         - "./nginx:/etc/nginx/conf.d"
 
@@ -28,9 +33,14 @@ services:
       GALAXY_SECRET: "0xdeadbeefcafe"
       GXC_BACKEND_URL: "target:8080"
       GXC_LOGLEVEL: DEBUG
-    links:
-      - galaxy:galaxy
-      - apollo:target
+    networks:
+      divseek:
+    #
+    # deprecating links and referring to explicit 'divseek' network?
+    #
+    # links:
+    #  - galaxy:galaxy
+    #  - apollo:target
 
   galaxy: ## Galaxy, yay!
     image: quay.io/galaxy-genome-annotation/docker-galaxy-annotation:master
@@ -45,15 +55,17 @@ services:
         GALAXY_SHARED_DIR: /apollo-data
         GALAXY_JBROWSE_SHARED_DIR: /jbrowse/data
         GALAXY_ID_SECRET: "0xdeadbeefcafe"
+    networks:
+      divseek:
     volumes:
-        - "./volumes/galaxy:/export"
+        - "../${DC_CROP}/volumes/galaxy:/export"
         - "./galaxy.ini:/etc/galaxy/galaxy.ini"
 
   apollo: ## Apollo, the genome annotation suite
     image: quay.io/erasche/apollo:remote_user
     links:
       - "apollo_db"
-      - "tripal_db"
+      - "chado"
     environment:
       CONTEXT_PATH: "apollo"
       WEBAPOLLO_DB_USERNAME: postgres
@@ -65,16 +77,18 @@ services:
       WEBAPOLLO_CHADO_DB_PASSWORD: postgres
       WEBAPOLLO_CHADO_DB_DRIVER: "org.postgresql.Driver"
       WEBAPOLLO_CHADO_DB_DIALECT: "org.hibernate.dialect.PostgresPlusDialect"
-      WEBAPOLLO_CHADO_DB_URI: "jdbc:postgresql://tripal_db/postgres"
+      WEBAPOLLO_CHADO_DB_URI: "jdbc:postgresql://chado/postgres"
       # Optional, allow image to 'wait'
       WEBAPOLLO_DB_HOST: apollo_db
       WEBAPOLLO_DB_PORT: 5432
       WEBAPOLLO_DB_NAME: postgres
-      WEBAPOLLO_CHADO_DB_HOST: tripal_db
+      WEBAPOLLO_CHADO_DB_HOST: chado
       WEBAPOLLO_CHADO_DB_PORT: 5432
       WEBAPOLLO_CHADO_DB_NAME: postgres
       # Configure admin user email
       APOLLO_ADMIN_EMAIL: admin@galaxy.org
+    networks:
+      divseek:
     volumes_from:
         - "galaxy:ro"
 
@@ -82,18 +96,25 @@ services:
     image: postgres:9.5
     environment:
       POSTGRES_PASSWORD: postgres
+    networks:
+      divseek:
     volumes:
-        - "./volumes/apollo:/var/lib/postgresql/data/"
+        - "../${DC_CROP}/volumes/apollo:/var/lib/postgresql/data/"
 
   postgrest:
     image: quay.io/erasche/postgrest:latest
-    links:
-      - "tripal_db:db"
     environment:
       POSTGREST_JWT_SECRET: thisisnotarealsecret
       POSTGREST_SCHEMA: chado
       PG_PASSWORD: postgres
       PG_DB: postgres
+    #
+    # deprecating links and referring to 'divseek' network?
+    #
+    # links:
+    #  - "chado:db"
+    networks:
+      divseek:
 
   postgraphql: ## GraphQL interface to Postgres
     image: erasche/postgraphql:gmod-hacks
@@ -103,31 +124,46 @@ services:
         PG_SECRET: "deadbeefcafe"
         PGUSER: postgres
         PGPASSWORD: postgres
-        PGHOST: tripal_db
+        PGHOST: chado
         PGPORT: 5432
         PGDATABASE: postgres
         DB_SCHEMA: "public,chado"
-    links:
-        - "tripal_db"
+    #
+    # deprecating links and referring to 'divseek' network?
+    #
+    # links:
+    #    - "chado"
+    networks:
+      divseek:
 
   postgraphql-refseqs: ## PostGraphQL refseq server (required for JBrowse integration)
     build: refseqs
     environment:
       PGUSER: postgres
       PGPASSWORD: postgres
-      PGHOST: tripal_db
+      PGHOST: chado
       PGPORT: 5432
       PGDATABASE: postgres
-    links:
-      - "tripal_db:db"
+    #
+    # deprecating links and referring to 'divseek' network?
+    #
+    # links:
+    #    - "chado:db"
+    networks:
+      divseek:
 
   pgadmin4: ## Postgres Admin Site
     image: thajeztah/pgadmin4
     ports:
         - 8201:5050
+    #
+    # should probably deprecate these links?
+    #
     links:
       - "apollo_db:apollo"
-      - "tripal_db:tripal"
+      - "chado:tripal"
+    networks:
+      divseek:
     volumes:
         - "./pgadmin4.db:/pgadmin/config/pgadmin4.db"
 
@@ -143,45 +179,127 @@ services:
     image: quay.io/erasche/chado-jbrowse-connector:latest
     environment:
       POSTGRES_PASSWORD: postgres
-      SITE_PATH: "http://localhost:8200/jbrowse/"
-      JBROWSE: "http://localhost:8200/jbrowse_actual/"
-    links:
-      - "tripal_db:db"
+      #
+      # Production NGINX needs to proxy to distinct container host server ports
+      #
+      # NGINX should proxy jbrowse to staging server port 8203
+      #
+      SITE_PATH: "${DC_BASE_URL_PROTO}${DC_SITE_BASE_HOSTNAME}/jbrowse/"
+      #
+      # NGINX should proxy jbrowse_actual to staging server port 8202
+      #
+      JBROWSE:   "${DC_BASE_URL_PROTO}${DC_SITE_BASE_HOSTNAME}/jbrowse_actual/"
+    ports:
+      - "8202:8500"
+    #
+    # replacing deprecated 'links' with chado service network aliases?
+    #
+    #links:
+    #  - "tripal_db:db"
+    networks:
+      divseek:
 
-  tripal_db: ## Tripal's Postgres Database
+  chado:  # Tripal's Chado Database
     image: quay.io/galaxy-genome-annotation/chado:1.31-jenkins21-pg9.5
     environment:
-      - POSTGRES_PASSWORD=postgres
-        # The default chado image would try to install the schema on first run,
-        # we just want the tools to be available.
-      - INSTALL_CHADO_SCHEMA=0
-      - INSTALL_YEAST_DATA=0
+      POSTGRES_PASSWORD: "postgres"
+      # The default chado image would try to install the schema on first run, we just want the tools to be available.
+      # The reason why is because Tripal will install the schema for us, but won't be able to run if there's an existing schema
+      INSTALL_CHADO_SCHEMA: 0
+      INSTALL_YEAST_DATA: 0
+      PGDATA: "/var/lib/postgresql/data/"
+    networks:
+      divseek:
+        aliases:
+          - db
+          - tripal
     volumes:
-      - ./volumes/tripal/db:/var/lib/postgresql/data/
+      - ../${DC_CROP}/volumes/tripal/db:/var/lib/postgresql/data/
 
-  tripal: ## Tripal
-    image: quay.io/galaxy-genome-annotation/tripal:latest
-    links:
-      - tripal_db:postgres
-      - elasticsearch:elasticsearch
+  tripal:
+    build:
+      context: ./divseek_canada
+      dockerfile: Dockerfile
+      args:
+        DIVSEEK_ADMIN_USER: "${DC_ADMIN_USER}"
+        DIVSEEK_DB_HOST: "chado"
     volumes:
-      - ./volumes/tripal/html:/var/www/html/sites
-      - ./volumes/tripal/private:/var/www/private
+      - ../${DC_CROP}/volumes/tripal/sites:/var/www/html/sites
+      - ../${DC_CROP}/volumes/tripal/private:/var/www/private
     environment:
       UPLOAD_LIMIT: 20M
       MEMORY_LIMIT: 128M
-      BASE_URL_PATH: /tripal
-
+      DB_HOST:  "chado"
+      DB_NAME: "postgres"
+      #
+      SITE_NAME: "${DC_SITE_NAME} ${DC_CROP}"
+      BASE_URL_PROTO: "${DC_BASE_URL_PROTO}"
+      BASE_URL_PATH: "${DC_BASE_URL_PATH}"
+      BASE_URL: "${DC_BASE_URL_PROTO}${DC_SITE_BASE_HOSTNAME}${DC_BASE_URL_PATH}"
+      #
+      TRIPAL_GIT_CLONE_LIBRARIES: "https://github.com/galaxyproject/blend4php.git"
+      TRIPAL_DOWNLOAD_MODULES: "bootstrap maillog smtp jquery_update panels advanced_help"
+      TRIPAL_GIT_CLONE_MODULES: "https://github.com/tripal/tripal_jbrowse.git https://github.com/tripal/brapi
+                                 https://github.com/tripal/trpdownload_api
+                                 https://github.com/UofS-Pulse-Binfo/nd_genotypes.git
+                                 https://github.com/UofS-Pulse-Binfo/genotypes_loader.git
+                                 https://github.com/tripal/tripal_jbrowse"
+      #
+      # Avoiding a strange  runtime error with tripal_bulk_loader by NOT enabling  it for now
+      #
+      TRIPAL_ENABLE_MODULES: "bootstrap maillog smtp jquery_update panels advanced_help page_manager tracker forum
+                             tripal_jbrowse tripal_galaxy brapi nd_genotypes genotypes_loader tripal_jbrowse_mgmt"
+      #                      tripal_jbrowse tripal_galaxy brapi tripal_bulk_loader nd_genotypes genotypes_loader tripal_jbrowse_mgmt"
+      THEME: "bootstrap"
+    ports:
+      - "8200:80"
+    #
+    # replacing deprecated 'links' with 'divseek' network?
+    #
+    #links:
+    #  - chado:postgres
+    networks:
+      divseek:
+    depends_on:
+      - chado
+      - elasticsearch
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.5.1
+    environment:
+      TAKE_FILE_OWNERSHIP: "true"
+    networks:
+      divseek:
+    volumes:
+      - ../${DC_CROP}/volumes/index:/usr/share/elasticsearch/data
 
   jbrowse:
     image: quay.io/galaxy-genome-annotation/jbrowse:v1.12.5
+    networks:
+        divseek:
     volumes_from:
         - "galaxy:ro"
 
+  #
+  # Alternate jbrowse configuration? (from docker-tripal experiment?)
+  # Not using it because of uncertainty on how it would mesh with Galaxy?
+  #
+  # jbrowse:
+  # image: quay.io/galaxy-genome-annotation/jbrowse:v1.16.2
+  #  ports:
+  #    - "8203:80"
+  #  networks:
+  #    divseek:
+  #  volumes:
+  #    - ../${DC_CROP}/volumes/jbrowse/data:/data
+
   jbrowse-graphql:
     image: quay.io/galaxy-genome-annotation/jbrowse:v1.12.5
+    networks:
+      divseek:
     volumes:
         - "./jbgraphql:/data"
+
+networks:
+  divseek:
+    driver: bridge

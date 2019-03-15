@@ -1,0 +1,30 @@
+# 
+# A new TRIPAL_GIT_CLONE_LIBRARIES parameter keeps the adding of outside Drupal functionality uniform
+# It's necessary because some modules need libraries that aren't standard
+#
+
+echo "Divseek Canada Script"
+echo "Setting up Drupal libraries from git repositories"
+
+# TODO: no cd to `/var/www/html/` ?
+
+if [ ! -z "$TRIPAL_GIT_CLONE_LIBRARIES" ]; then
+    cd /var/www/html/sites/all/libraries/
+    for repo in $TRIPAL_GIT_CLONE_LIBRARIES; do
+        repo_url=`echo $repo | sed 's/\(.\+\)\[@\w\+\]/\1/'`
+        rev=`echo $repo | sed 's/.\+\[@\(\w\+\)\]/\1/'`
+        library_name=`basename $repo_url .git`
+        if [ -d "$library_name" ]; then
+            echo "Skipping git clone of library $library_name from $repo_url, $library_name already exists in /var/www/html/sites/all/libraries/$library_name"
+        else
+            git clone $repo_url
+            if [ "$repo_url" != "$rev" ]; then
+                cd "$library_name"
+                git reset --hard $rev
+                cd /var/www/html/sites/all/libraries/
+            fi
+        fi
+    done
+    cd /var/www/html/
+fi
+

@@ -1,0 +1,26 @@
+# This script will apply additional DivSeek Canada site configuration to the Tripal / Drupal site
+
+echo "Applying additional DivSeek Canada configuration to the Tripal / Drupal web site"
+
+: ${BOOTSTRAP_THEME_PATH:='/var/www/html/sites/all/themes/bootstrap'}
+echo "Setting ${BOOTSTRAP_THEME_PATH}/logo.png to DivSeek Canada logo"
+cp -f /DivSeekCanadaLogo.png ${BOOTSTRAP_THEME_PATH}/logo.png
+
+echo "Setting ${BOOTSTRAP_THEME_PATH}/favicon.ico to DivSeek Canada favicon"
+cp -f /DivSeekCanadaLogo.ico ${BOOTSTRAP_THEME_PATH}/favicon.ico
+
+#
+# Adding Bootswatch themes to the Bootstrap theme (eventually...)
+#
+: ${BOOTSWATCH_THEME:='flatly'}
+: ${BOOTSTRAP_CSS:="${BOOTSTRAP_THEME_PATH}/css"}
+echo "STUB Installing Bootswatch theme: ${BOOTSWATCH_THEME} into ${BOOTSTRAP_CSS} "
+#
+# wget "https://bootswatch.com/4/${BOOTSWATCH_THEME_PATH}/bootstrap.min.css" \
+#          -O "${BOOTSTRAP_CSS}/bootstrap.min.css" \
+# wget "https://bootswatch.com/4/${BOOTSWATCH_THEME_PATH}/bootstrap.css" \
+#         -O "${BOOTSTRAP_CSS}/bootstrap.css" \
+# wget "https://bootswatch.com/4/${BOOTSWATCH_THEME_PATH}/_variables.css" \
+#         -O "${BOOTSTRAP_CSS}/_variables.css" \
+# wget "https://bootswatch.com/4/${BOOTSWATCH_THEME_PATH}/_bootswatch.css" \
+#         -O "${BOOTSTRAP_CSS}/_bootswatch.css"
