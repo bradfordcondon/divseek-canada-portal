@@ -217,14 +217,26 @@ The **docker-compose.yml** is parameterized for (crop) site specific site deploy
 
 The original **dockerized-gmod-deployment** specifies an NGINX configuration under a subfolder _nginx_. Unfortunately, most realistic site deployments (e.g. with https:// SSL configuration, particular hostnames, etc.) generally necessitates the creation of a customized NGINX file which, although taking the docker compose system into account, needs to also include additional elements, the composition of which this project cannot foresee and hard code (nor parameterize directly, since NGINX doesn't allow for that).  The compromise we've taken here, in the **divseek-canada-build** branch, is to convert the default NGINX into a template, then provide some suggestions here on how to customize and properly deploy your copy of the template for use in the system.  The following protocol is simply one that worked for us; those of you with deeper knowledge can likely converge on your own solution to the NGINX configuration.
 
-1. Copy the **nginx/default-template** into **nginx/default**.
+1. Copy the **nginx/default.conf-template** into **nginx/default.conf**.
 
-2. Rename the name _my-divseek-portal-server_ of the _server_name_ parameter and everywhere else that it is found inside the server block, to the actual site host name that you have published with your Domain Name Service provider (e.g. sunflower.divseekcanada.ca).
+2. Rename the name _my-divseek-portal-server_ of the _server_name_ parameter and everywhere else that it is found 
+inside the server block, to the _DC_SITE_BASE_HOSTNAME_ hostname you set in your **.env** file 
+(e.g. **sunflower.divseekcanada.ca**).
 
-3. Add any required _https://_ SSL certificate configuration. Using the [certbot tool](https://certbot.eff.org/) of the free certificate [LetsEncrypt initiative](https://letsencrypt.org/) is a nice way forward here, but you need to be a bit clever to achieve this since **certbot** generally requires that you specify the web server and operating system you are using so it can make reasonable assumptions about where things should go. This task is facilitated somewhat by using a [Docker image for Certbox](https://hub.docker.com/r/certbot/certbot/) plus [available instructions on how to set things up by a developer named 'Philipp'](https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71). We've partly applied the required certbot customizations to the docker-compose.yml file, but you'll need to apply the NGINX configuration edits and run the indicated procedure for the initial generation of SSL certificates for insertion into the configuration. For convenience, Philipp's ```init-letsencrypt.sh``` has been customized (to read the host name set in your **.env** file) and embedded in our project. After ensuring that it is executable, you may run it:
+3. Configure _https://_ SSL certificate configuration. Using the [certbot tool](https://certbot.eff.org/) of the free 
+certificate [LetsEncrypt initiative](https://letsencrypt.org/) is a nice way forward here, but you need to be a 
+bit clever to achieve this since **certbot** generally requires that you specify the web server and operating system 
+you are using so it can make reasonable assumptions about where things should go. This task is facilitated somewhat 
+by using a [Docker image for Certbox](https://hub.docker.com/r/certbot/certbot/) plus 
+[available instructions on how to set things up by a clever developer named 'Philipp'](https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71). 
+We've partly applied the required **certbot** customizations to the _docker-compose.yml_ file, but you'll need to apply
+the NGINX configuration edits and run the indicated procedure for the initial generation of SSL certificates for 
+insertion into the configuration. For convenience, Philipp's ```init-letsencrypt.sh``` has been customized (to read 
+the host name set in your **.env** file) and embedded in our project. If you have set your **.env** file correctly,
+then You may therefore run it as follows:
 
 ```
-chmod +x init-letsencrypt.sh and sudo ./init-letsencrypt.sh.
+sudo ./init-letsencrypt.sh.
 ```
 
 4. The default GMOD deployment is to show 'galaxy' on the root path of the hostname but there is an alternate 

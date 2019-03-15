@@ -6,7 +6,7 @@
 # This version assumes that the certbot data is under the ./certbot subdirectory and that
 # the domain name is extracted from the user customized .env (dot-env) environmental variables file
 #
-hostname=$(egrep -v '^#' .env | grep  DC_SITE_BASE_HOSTNAME|xargs -0)
+hostname=$(egrep -v '^#' .env | grep DC_SITE_BASE_HOSTNAME | xargs -0)
 hostname=${hostname#*=}
 domains=(${hostname})
 rsa_key_size=4096
