@@ -221,15 +221,7 @@ The original **dockerized-gmod-deployment** specifies an NGINX configuration und
 
 2. Rename the name _my-divseek-portal-server_ of the _server_name_ parameter and everywhere else that it is found inside the server block, to the actual site host name that you have published with your Domain Name Service provider (e.g. sunflower.divseekcanada.ca).
 
-3. Add any required _https://_ SSL certificate configuration. Using the [certbot tool](https://certbot.eff.org/) of the free certificate [LetsEncrypt initiative](https://letsencrypt.org/) is a nice way forward here, but you need to be a bit clever to achieve this since **certbot** generally requires that you specify the web server and operating system you are using so it can make reasonable assumptions about where things should go. This task is facilitated somewhat by using a [Docker image for Certbox](https://hub.docker.com/r/certbot/certbot/) plus available [instructions on how to set things up](https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71). We've partly applied the required certbot customizations to the docker-compose.yml file, but you'll need to apply the NGINX configuration edits and run the indicated procedure for the initial generation of SSL certificates for insertion into the configuration. This procedure is copied here (for convenience) from the aforementioned web site instructions:
-
-Download the script to your working directory as init-letsencrypt.sh:
-
-```curl -L https://raw.githubusercontent.com/wmnnd/nginx-certbot/master/init-letsencrypt.sh > init-letsencrypt.sh```
-
-Edit the script to add in your domain(s) and your email address. If you’ve changed the directories of the shared Docker volumes, make sure you also adjust the data_path variable as well.
-
-Then run
+3. Add any required _https://_ SSL certificate configuration. Using the [certbot tool](https://certbot.eff.org/) of the free certificate [LetsEncrypt initiative](https://letsencrypt.org/) is a nice way forward here, but you need to be a bit clever to achieve this since **certbot** generally requires that you specify the web server and operating system you are using so it can make reasonable assumptions about where things should go. This task is facilitated somewhat by using a [Docker image for Certbox](https://hub.docker.com/r/certbot/certbot/) plus [available instructions on how to set things up by a developer named 'Philipp'](https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71). We've partly applied the required certbot customizations to the docker-compose.yml file, but you'll need to apply the NGINX configuration edits and run the indicated procedure for the initial generation of SSL certificates for insertion into the configuration. For convenience, Philipp's ```init-letsencrypt.sh``` has been customized (to read the host name set in your **.env** file) and embedded in our project. After ensuring that it is executable, you may run it:
 
 ```
 chmod +x init-letsencrypt.sh and sudo ./init-letsencrypt.sh.
