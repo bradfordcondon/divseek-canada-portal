@@ -1,0 +1,3 @@
+# Enforce user creation of NGINX configuration from a template
+# to allow users to apply special customizations to their sites
+default.conf
