@@ -211,7 +211,7 @@ As of March 2019, the DivSeek Canada Portal customizes a git fork of the
 
 The core of the customization is in the Docker Compose build file (**docker-compose.yml**) on the **divseek-canada-build** branch.  This file is customized for (crop) site specific needs using environment variables defined in a **.env** file. That is, to customize a given crop-specific site, need to copy the **template.env** into **.env** then customize the contents to point to your actual portal hostname.
 
-The NGINX proxy is also configured during the docker comopose build using a **default.conf** file in the **nginx**
+The NGINX proxy is also configured during the docker compose build using a **default.conf** file in the **nginx**
 subdirectory. The GMOD deployment default is to show 'galaxy' on the hostname resolution but there is an alternate 
 template for a  'galaxy-tripal' swapped proxy. One or the other template (under the **nginx** subdirectory)
 should be copied into **nginx/default.conf**.
