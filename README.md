@@ -16,7 +16,7 @@ Some technical notes about the portal system will be compiled on the
 
 # Docker Deployment of the DivSeek Canada Portal
 
-The DivSeek Canada Portal is being designed to run within a system of **Docker** containers when the application is run on a Linux server or virtual machine. Thus, some system preparation to run Docker is required.
+The DivSeek Canada Portal is being designed to run within a **Docker Compose** deployed system of **Docker** containers when the application is run on a Linux server or virtual machine. Thus, some system preparation to run Docker (and Compose) is required.
 
 ## Configuration for Cloud Deployment
 
@@ -47,7 +47,7 @@ cloud server instance. We suggest creating a volume at least 200 GB in size (to 
 SSH terminal session, as follows (where '$' is the Linux Bash CLI terminal prompt):
 
     # Before starting, make sure that the new volume (here, 'vdb') is visible (should be!)
-    $ lsblk
+    lsblk
     NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
     vda     254:0    0  2.2G  0 disk
     ├─vda1  254:1    0  2.1G  0 part /
@@ -56,19 +56,45 @@ SSH terminal session, as follows (where '$' is the Linux Bash CLI terminal promp
     vdb     254:16   0  200G  0 disk
 
     # First, initialize the filing system on the new, empty, raw volume (assumed here to be on /dev/vdb)
-    $ sudo mkfs -t ext4 /dev/vdb 
+    sudo mkfs -t ext4 /dev/vdb 
    
     # Mount the new volume in its place (we assume that the folder '/opt' already exists)
-    $ sudo mount /dev/vdb /opt
+    sudo mount /dev/vdb /opt
 
     # Provide a symbolic link to the future home of the docker storage subdirectories
-    $ sudo mkdir /opt/docker
-    $ sudo chmod go-r /opt/docker
+    sudo mkdir /opt/docker
+    sudo chmod go-r /opt/docker
     
     # It is assumed that /var/lib/docker doesn't already exist. 
     # Otherwise, you'll need to delete it first, then create the symlink
-    $ sudo ln -s /opt/docker /var/lib  
+    sudo ln -s /opt/docker /var/lib  
     
+It is also recommended that a separate additional volume for each crop dataset deployed be created, following the above instructions.  A 500 GB volume is likely to be needed for this given the genomic large data sets involved. Also, you can attach volumes containing the raw input data (e.g. VCF files) as you need (Note: you should obviously not run the ```mkfs``` command afresh on any volumes which already have data!)  It is recommended first that you create a subdirectory ```/opt/divseekcanada``` then mount these additional volumes in that subdirectory, namely something like the following:
+
+```
+# Create a master folder for the DivSeek Canada code
+sudo mkdir -p /opt/divseekcanada
+# ensuring easy $USER access to these resources
+sudo chown ubuntu:ubuntu /opt/divseekcanada
+# Add the data volumes
+sudo mkdir -p /opt/divseekcanada/data/downy-mildew
+sudo mount /dev/vdc /opt/divseekcanada/data/downy-mildew
+sudo mkdir -p /opt/divseekcanada/Sunflower
+sudo mount /dev/vdd /opt/divseekcanada/Sunflower
+
+# test the fstab mount with a 'fake' mounting
+sudo mount -vf
+```
+
+After completing the above steps, you should configure ```/etc/fstab``` file for system boot up mounting of the new volumes:
+    
+    # These volumes need to be auto mounted upon each reboot of the system
+    # so you should (carefully) add them to the Linux /etc/fstab file 
+    # of the server, something like the following text entries (customize for your crop):
+    /dev/vdb        /opt    ext4    rw,relatime     0       0
+    /dev/vdc        /opt/divseekcanada/data/downy-mildew    ext4    rw,relatime     0       0
+    /dev/vdd        /opt/divseekcanada/Sunflower    ext4    rw,relatime     0       0
+
 Now, you can proceed to install Docker and Docker Compose.
 
 ## Installation of Docker
@@ -79,7 +105,7 @@ For our installations, we typically use Ubuntu Linux, for which there is an [Ubu
 Note that you should have 'curl' installed first before installing Docker:
 
 ```
-$ sudo apt-get install curl
+sudo apt-get install curl
 ```
 
 For other installations, please find instructions specific to your choice of Linux variant, on the Docker site.
@@ -89,7 +115,7 @@ For other installations, please find instructions specific to your choice of Lin
 In order to ensure that Docker is working correctly, run the following command:
 
 ```
-$ sudo docker run hello-world
+sudo docker run hello-world
 ```
 
 This should result in something akin to the following output:
@@ -114,7 +140,7 @@ To generate this message, Docker took the following steps:
     to your terminal.
 
 To try something more ambitious, you can run an Ubuntu container with:
- $ docker run -it ubuntu bash
+ docker run -it ubuntu bash
 
 Share images, automate workflows, and more with a free Docker ID:
  https://cloud.docker.com/
@@ -136,7 +162,7 @@ as 'sudo'. See [here](https://docs.docker.com/install/linux/linux-postinstall/) 
 
 In order to ensure Docker Compose is working correctly, issue the following command:
 ```
-$ docker-compose --version
+docker-compose --version
 docker-compose version 1.22.0, build f46880f
 ```
 Note that your particular version and build number may be different than what is shown here. We don't currently expect that docker-compose version differences should have a significant impact on the build, but if in doubt, refer to the release notes of the docker-compose site for advice.
@@ -148,11 +174,7 @@ resource limit, reported by the following error message:
 
     max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
 
-This solution to this is to run the following on the command line of your Linux system hosting docker:
-
-    sudo sysctl -w vm.max_map_count=262144
-
-To make it persistent, you can add this line:
+This solution to this is to add this line:
 
     vm.max_map_count=262144
 
@@ -168,22 +190,19 @@ This project resides in [this Github project repository](https://github.com/DivS
 
 First, ensure that you have the git client installed (here again, we assume Ubuntu; '$' is the bash CLI prompt):
 
-    $ sudo apt update
-    $ sudo apt install git
+    sudo apt update
+    sudo apt install git
 
 Next, you should configure git with your Git repository metadata and, perhaps, activate credential management (we use 'cache' mode here to avoid storing credentials in plain text on disk)
 
-    $ git config --global user.name "your-git-account"
-    # git config --global user.email "your-email"
-    $ git config --global credential.helper cache
+    git config --global user.name "your-git-account"
+    git config --global user.email "your-email"
+    git config --global credential.helper cache
 
-Then, you can clone the project. A convenient location for the code is in a folder under **/opt**:
+Then, you can clone the project. A convenient location for the code is in a folder under **/opt/divseekcanada**:
 
-    $ cd /opt
-    $ sudo mkdir divseekcanada
-    $ sudo chown ubuntu:ubuntu divseekcanada  # ensuring easy $USER access to the code...
-    $ cd divseekcanada
-    $ git clone https://github.com/DivSeek-Canada/divseek-canada-portal 
+    cd /opt/divseekcanada
+    git clone https://github.com/DivSeek-Canada/divseek-canada-portal 
 
 # Deployment of the Portal System
 
@@ -192,7 +211,7 @@ As of March 2019, the DivSeek Canada Portal customizes a git fork of the
 
 The core of the customization is in the Docker Compose build file (**docker-compose.yml**) on the **divseek-canada-build** branch.  This file is customized for (crop) site specific needs using environment variables defined in a **.env** file. That is, to customize a given crop-specific site, need to copy the **template.env** into **.env** then customize the contents to point to your actual portal hostname.
 
-The NGINX proxy is also configured during the docker comopose build using a **default.conf** file in the **nginx**
+The NGINX proxy is also configured during the docker compose build using a **default.conf** file in the **nginx**
 subdirectory. The GMOD deployment default is to show 'galaxy' on the hostname resolution but there is an alternate 
 template for a  'galaxy-tripal' swapped proxy. One or the other template (under the **nginx** subdirectory)
 should be copied into **nginx/default.conf**.
@@ -201,17 +220,17 @@ The general project launch steps noted in the  [GMOD stack README](./docker-gmod
 otherwise followed with the revised YML file specified:
 
 ```console
-$ docker-compose pull # Pull all images
-$ docker-compose up -d apollo_db chado # Launch the DBs
+docker-compose pull # Pull all images
+docker-compose up -d apollo_db chado # Launch the DBs
 ```
 
 In a new terminal, in the same folder, run `docker-compose logs -f` in order to
 watch what is going on.
 
 ```
-$ docker-compose up -d --build tripal # Wait for tripal to come up and install Chado.
-$ # It takes a few minutes. I believe you'll see an apache error when ready.
-$ docker-compose up -d --build # This will bring up the rest of the services.
+docker-compose up -d --build tripal # Wait for tripal to come up and install Chado.
+# It takes a few minutes. I believe you'll see an apache error when ready.
+docker-compose up -d --build # This will bring up the rest of the services.
 ```
 
 # Deeper Details about the GMOD Deployment (copied over from the original GGA repository)
