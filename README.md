@@ -219,7 +219,7 @@ The original **dockerized-gmod-deployment** specifies an NGINX configuration und
 
 1. Copy the **nginx/default-template** into **nginx/default**.
 
-2. Rename the name _my-divseek-portal-server_ of the _server_name_ parameter inside the the server block to your actual site host name.
+2. Rename the name _my-divseek-portal-server_ of the _server_name_ parameter inside the the server block to your actual site host name published by your Domain Name Service provider.
 
 3. Add any required _https://_ SSL certificate configuration. Using the [certbot tool](https://certbot.eff.org/) of the free certificate [LetsEncrypt initiative](https://letsencrypt.org/) is a nice way forward here, but you need to be a bit clever to achieve this since **certbot** generally requires that you specify the web server and operating system you are using so it can make reasonable assumptions about where things should go. This task is facilitated somewhat by using a [Docker image for Certbox](https://hub.docker.com/r/certbot/certbot/) plus available [instructions on how to set things up](https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71). 
 
