@@ -11,12 +11,12 @@ The first iteration of the platform is funded under a
 
 # Documentation
 
-Some technical notes about the portal system will be compiled on the 
-[Divseek Portal Wiki](https://github.com/DivSeek-Canada/divseek-canada-portal/wiki).
+Additional technical notes about the portal system may (soon) be found on the 
+[Divseek Portal Wiki](https://github.com/DivSeek-Canada/divseek-canada-portal/wiki), in addition to the details noted in this README.
 
 # Docker Deployment of the DivSeek Canada Portal
 
-The DivSeek Canada Portal is being designed to run within a **Docker Compose** deployed system of **Docker** containers when the application is run on a Linux server or virtual machine. Thus, some system preparation to run Docker (and Compose) is required.
+The _DivSeek Canada Portal_ is being designed to run within a **Docker Compose** deployed system of **Docker** containers when the application is run on a Linux server or virtual machine. Thus, some system preparation to run Docker (and Compose) is required.
 
 ## Configuration for Cloud Deployment
 
@@ -207,30 +207,46 @@ Then, you can clone the project. A convenient location for the code is in a fold
 # Deployment of the Portal System
 
 As of March 2019, the DivSeek Canada Portal customizes a git fork of the 
-[Galaxy Genome Annotation "Dockerized GMOD" code base](https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment). 
+[Galaxy Genome Annotation "Dockerized GMOD" code base](https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment).  The core of the customization is in the Docker Compose build file (**docker-compose.yml**) on the **divseek-canada-build** branch. Prior to running the build, however, some configuration tasks need to be completed.
 
-The core of the customization is in the Docker Compose build file (**docker-compose.yml**) on the **divseek-canada-build** branch.  This file is customized for (crop) site specific needs using environment variables defined in a **.env** file. That is, to customize a given crop-specific site, need to copy the **template.env** into **.env** then customize the contents to point to your actual portal hostname.
+## Docker Compose Parameter Setting
 
-The NGINX proxy is also configured during the docker compose build using a **default.conf** file in the **nginx**
-subdirectory. The GMOD deployment default is to show 'galaxy' on the hostname resolution but there is an alternate 
+The **docker-compose.yml** is parameterized for (crop) site specific site deployment using environment variables defined in a **.env** file, derived from the available **template.env** file, which needs to be copied into **.env** then customized to point to your actual public host particulars.
+
+## NGINX Proxy Configuration
+
+The original **dockerized-gmod-deployment** specifies an NGINX configuration under a subfolder _nginx_. Unfortunately, most realistic site deployments (e.g. with https:// SSL configuration, particular hostnames, etc.) generally necessitates the creation of a customized NGINX file which, although taking the docker compose system into account, needs to also include additional elements, the composition of which this project cannot foresee and hard code (nor parameterize directly, since NGINX doesn't allow for that).  The compromise we've taken here, in the **divseek-canada-build** branch, is to convert the default NGINX into a template, then provide some suggestions here on how to customize and properly deploy your copy of the template for use in the system.  The following protocol is simply one that worked for us; those of you with deeper knowledge can likely converge on your own solution to the NGINX configuration.
+
+1. Copy the **nginx/default-template** into **nginx/default**.
+
+2. Rename the name _my-divseek-portal-server_ of the _server_name_ parameter inside the the server block to your actual site host name.
+
+3. Add any required _https://_ SSL certificate configuration. Using the [certbot tool](https://certbot.eff.org/) of the free certificate [LetsEncrypt initiative](https://letsencrypt.org/) is a nice way forward here, but you need to be a bit clever to achieve this since **certbot** generally requires that you specify the web server and operating system you are using so it can make reasonable assumptions about where things should go. This task is facilitated somewhat by using a [Docker image for Certbox](https://hub.docker.com/r/certbot/certbot/) plus available [instructions on how to set things up](https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71). 
+
+4. The default GMOD deployment is to show 'galaxy' on the root path of the hostname but there is an alternate 
 template for a  'galaxy-tripal' swapped proxy. One or the other template (under the **nginx** subdirectory)
 should be copied into **nginx/default.conf**.
 
-The general project launch steps noted in the  [GMOD stack README](./docker-gmod/README.md) are 
-otherwise followed with the revised YML file specified:
+Now we are set to build the system and fire it up.
 
-```console
-docker-compose pull # Pull all images
-docker-compose up -d apollo_db chado # Launch the DBs
-```
+## Running the Docker-Compose Build
 
-In a new terminal, in the same folder, run `docker-compose logs -f` in order to
-watch what is going on.
+The general project launch steps noted in the  [original GMOD deployment project README](https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment/README.md) are otherwise followed, albeit with the **divseek-canada-build** customized _docker-compose.yml_ file:
 
 ```
-docker-compose up -d --build tripal # Wait for tripal to come up and install Chado.
-# It takes a few minutes. I believe you'll see an apache error when ready.
-docker-compose up -d --build # This will bring up the rest of the services.
+docker-compose pull                  # Pulls in the required service Docker images
+docker-compose up -d apollo_db chado # Launches the database containers
+```
+
+In a new terminal, in the same folder, you can run ```docker-compose logs -f``` in order to follow the build process and decypher errors.
+
+```
+# Wait for tripal to come up and install Chado.
+docker-compose up -d --build tripal
+
+# It takes a few minutes until you see an apache start-up notification.
+# Then, run a non-specific compose build to bring up the rest of the services.
+docker-compose up -d --build         
 ```
 
 # Deeper Details about the GMOD Deployment (copied over from the original GGA repository)
