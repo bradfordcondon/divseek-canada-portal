@@ -217,7 +217,9 @@ The **docker-compose.yml** is parameterized for (crop) site specific site deploy
 
 The original **dockerized-gmod-deployment** specifies an NGINX configuration under a subfolder _nginx_. Unfortunately, most realistic site deployments (e.g. with https:// SSL configuration, particular hostnames, etc.) generally necessitates the creation of a customized NGINX file which, although taking the docker compose system into account, needs to also include additional elements, the composition of which this project cannot foresee and hard code (nor parameterize directly, since NGINX doesn't allow for that).  The compromise we've taken here, in the **divseek-canada-build** branch, is to convert the default NGINX into a template, then provide some suggestions here on how to customize and properly deploy your copy of the template for use in the system.  The following protocol is simply one that worked for us; those of you with deeper knowledge can likely converge on your own solution to the NGINX configuration.
 
-1. Copy the **nginx/default.conf-template** into **nginx/default.conf**.
+1. Copy the **nginx/default.conf-template** into **nginx/default.conf**. The default GMOD deployment is to show 
+'galaxy' on the root path of the hostname  (an alternate template setting 'Tripal' as the primary landing page
+ still needs to be re-specified here).
 
 2. Rename the name _my-divseek-portal-server_ of the _server_name_ parameter and everywhere else that it is found 
 inside the server block, to the _DC_SITE_BASE_HOSTNAME_ hostname you set in your **.env** file 
@@ -238,10 +240,6 @@ then You may therefore run it as follows:
 ```
 sudo ./init-letsencrypt.sh.
 ```
-
-4. The default GMOD deployment is to show 'galaxy' on the root path of the hostname but there is an alternate 
-template for a  'galaxy-tripal' swapped proxy. One or the other template (under the **nginx** subdirectory)
-should be copied into **nginx/default.conf**.
 
 Now we are set to build the system and fire it up.
 
