@@ -261,10 +261,11 @@ docker-compose up -d --build tripal
 docker-compose up -d --build         
 ```
 
-# Deeper Details about the GMOD Deployment (copied over from the original GGA repository)
+# Deeper Details about the GMOD Deployment 
 
-This docker-compose.yml file specifies all of the infrastructure needed to run
-the current iteration of GMOD products.
+Copied over from the original GGA repository...some details may differ from the **divseek-canada-build** _docker-compose.yml_ file/
+
+The docker-compose.yml file specifies all of the infrastructure needed to run the current iteration of GMOD products.
 
 We have attempted to include as many "bells and whistles" as possible, which
 means this approaches the level of "tech-demo" and away from something you
