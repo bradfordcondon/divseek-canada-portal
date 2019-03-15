@@ -1,8 +1,17 @@
 #!/bin/bash
-
-domains=(example.com www.example.com)
+#
+# This script is ta slightly modified version of one published by "Philipp"
+# on the web site: https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71
+#
+# This version assumes that the certbot data is under the ./certbot subdirectory and that
+# the domain name is extracted from the user customized .env (dot-env) environmental variables file
+#
+hostname=$(egrep -v '^#' .env | grep  DC_SITE_BASE_HOSTNAME|xargs -0)
+hostname=${hostname#*=}
+domains=(${hostname})
 rsa_key_size=4096
-data_path="./data/certbot"
+data_path="./certbot"
+
 email="" # Adding a valid address is strongly recommended
 staging=0 # Set to 1 if you're testing your setup to avoid hitting request limits
 
