@@ -74,9 +74,12 @@ services:
 
   apollo: ## Apollo, the genome annotation suite
     image: quay.io/erasche/apollo:remote_user
-    links:
-      - "apollo_db"
-      - "chado"
+      #
+      # deprecating links and referring to 'divseek' network?
+      #
+      # links:
+      # "apollo_db"
+      # "chado"
     environment:
       CONTEXT_PATH: "apollo"
       WEBAPOLLO_DB_USERNAME: postgres
@@ -100,8 +103,11 @@ services:
       APOLLO_ADMIN_EMAIL: admin@galaxy.org
     networks:
       divseek:
-    volumes_from:
-        - "galaxy:ro"
+    depends_on:
+        - galaxy
+    volumes:
+      - "../${DC_CROP}/volumes/galaxy:/export"
+      - "./galaxy.ini:/etc/galaxy/galaxy.ini"
 
   apollo_db: ## Apollo's Postgres DB
     image: postgres:9.5
@@ -288,8 +294,11 @@ services:
     image: quay.io/galaxy-genome-annotation/jbrowse:v1.12.5
     networks:
         divseek:
-    volumes_from:
-        - "galaxy:ro"
+    depends_on:
+        - galaxy
+    volumes:
+      - "../${DC_CROP}/volumes/galaxy:/export"
+      - "./galaxy.ini:/etc/galaxy/galaxy.ini"
 
   #
   # Alternate jbrowse configuration? (from docker-tripal experiment?)
