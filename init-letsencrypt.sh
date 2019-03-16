@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# This script is ta slightly modified version of one published by "Philipp"
+# This script is a slightly modified version of one published by "Philipp"
 # on the web site: https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71
 #
 # This version assumes that the certbot data is under the ./certbot subdirectory and that

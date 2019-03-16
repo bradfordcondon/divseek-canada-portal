@@ -207,15 +207,38 @@ Then, you can clone the project. A convenient location for the code is in a fold
 # Deployment of the Portal System
 
 As of March 2019, the DivSeek Canada Portal customizes a git fork of the 
-[Galaxy Genome Annotation "Dockerized GMOD" code base](https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment).  The core of the customization is in the Docker Compose build file (**docker-compose.yml**) on the **divseek-canada-build** branch. Prior to running the build, however, some configuration tasks need to be completed.
+[Galaxy Genome Annotation "Dockerized GMOD" code base](https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment).  
+The core of the customization is in the Docker Compose build file (**docker-compose.yml**) on the 
+**divseek-canada-build** branch. Prior to running the build, however, some configuration tasks need to be completed.
+
+## Docker Compose Preliminaries
+
+The general project launch steps noted in the  
+[original GMOD deployment project README](https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment/README.md) 
+are otherwise followed, albeit with the **divseek-canada-build** customized _docker-compose.yml_ file. To start off 
+which, we can pre-load our Docker system with the required pre-built images, as follows:
+
+```
+docker-compose pull  # Pulls in the required service Docker images
+```
 
 ## Docker Compose Parameter Setting
 
-The **docker-compose.yml** is parameterized for (crop) site specific site deployment using environment variables defined in a **.env** file, derived from the available **template.env** file, which needs to be copied into **.env** then customized to point to your actual public host particulars.
+The **docker-compose.yml** is parameterized for (crop) site specific site deployment using environment variables 
+defined in a **.env** file, derived from the available **template.env** file, which needs to be copied into **.env** 
+then customized to point to your actual public host particulars.
 
 ## NGINX Proxy Configuration
 
-The original **dockerized-gmod-deployment** specifies an NGINX configuration under a subfolder _nginx_. Unfortunately, most realistic site deployments (e.g. with https:// SSL configuration, particular hostnames, etc.) generally necessitates the creation of a customized NGINX file which, although taking the docker compose system into account, needs to also include additional elements, the composition of which this project cannot foresee and hard code (nor parameterize directly, since NGINX doesn't allow for that).  The compromise we've taken here, in the **divseek-canada-build** branch, is to convert the default NGINX into a template, then provide some suggestions here on how to customize and properly deploy your copy of the template for use in the system.  The following protocol is simply one that worked for us; those of you with deeper knowledge can likely converge on your own solution to the NGINX configuration.
+The original **dockerized-gmod-deployment** specifies an NGINX configuration under a subfolder _nginx_. Unfortunately, 
+most realistic site deployments (e.g. with https:// SSL configuration, particular hostnames, etc.) generally
+ necessitates the creation of a customized NGINX file which, although taking the docker compose system into account, 
+ needs to also include additional elements, the composition of which this project cannot foresee and hard code 
+ (nor parameterize directly, since NGINX doesn't allow for that).  The compromise we've taken here, in the 
+ **divseek-canada-build** branch, is to convert the default NGINX into a template, then provide some suggestions 
+ here on how to customize and properly deploy your copy of the template for use in the system.  The following 
+ protocol is simply one that worked for us; those of you with deeper knowledge can likely converge on your own 
+ solution to the NGINX configuration.
 
 1. Copy the **nginx/default.conf-template** into **nginx/default.conf**. The default GMOD deployment is to show 
 'galaxy' on the root path of the hostname  (an alternate template setting 'Tripal' as the primary landing page
@@ -245,10 +268,9 @@ Now we are set to build the system and fire it up.
 
 ## Running the Docker-Compose Build
 
-The general project launch steps noted in the  [original GMOD deployment project README](https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment/README.md) are otherwise followed, albeit with the **divseek-canada-build** customized _docker-compose.yml_ file:
+It is recommended to first start the databases.
 
 ```
-docker-compose pull                  # Pulls in the required service Docker images
 docker-compose up -d apollo_db chado # Launches the database containers
 ```
 
