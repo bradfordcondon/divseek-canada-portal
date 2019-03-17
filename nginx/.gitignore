@@ -1,3 +1,4 @@
 # Enforce user creation of NGINX configuration from a template to encourage
 # users to apply the required customizations to their 'proxy' service
-default
+default.conf
+

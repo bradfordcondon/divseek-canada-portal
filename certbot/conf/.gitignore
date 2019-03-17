@@ -1,1 +1,10 @@
-./*
+# Don't commit any of the site-specific Certbot generated SSL artifacts
+accounts/
+archive/
+csr/
+live/
+options-ssl-nginx.conf
+renewal/
+renewal-hooks/
+ssl-dhparams.pem
+
