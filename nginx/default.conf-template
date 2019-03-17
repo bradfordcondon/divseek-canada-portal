@@ -35,6 +35,6 @@ server {
     # The location directives of the included proxy services is only
     # uncommented for inclusion once the basic HTTPS ssl has been configured
     #
-    # include ./service.locations;
+    # include service.locations;
 
 }
