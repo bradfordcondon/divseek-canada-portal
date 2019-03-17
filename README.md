@@ -105,7 +105,7 @@ For our installations, we typically use Ubuntu Linux, for which there is an [Ubu
 Note that you should have 'curl' installed first before installing Docker:
 
 ```
-sudo apt-get install curl
+sudo apt install curl
 ```
 
 For other installations, please find instructions specific to your choice of Linux variant, on the Docker site.
@@ -230,8 +230,9 @@ then customized to point to your actual public host particulars.
 
 ## NGINX Proxy Configuration
 
-The original **dockerized-gmod-deployment** specifies an NGINX configuration under a subfolder _nginx_. Unfortunately, 
-most realistic site deployments (e.g. with https:// SSL configuration, particular hostnames, etc.) generally
+The original **dockerized-gmod-deployment** includes a 'proxy' service that runs the NGINX web server software in a container.
+ To configure this package, the project specifies an NGINX configuration under a subfolder _nginx_. Unfortunately, 
+ most realistic site deployments (e.g. with https:// SSL configuration, particular hostnames, etc.) generally
  necessitates the creation of a customized NGINX file which, although taking the docker compose system into account, 
  needs to also include additional elements, the composition of which this project cannot foresee and hard code 
  (nor parameterize directly, since NGINX doesn't allow for that).  The compromise we've taken here, in the 
@@ -240,15 +241,21 @@ most realistic site deployments (e.g. with https:// SSL configuration, particula
  protocol is simply one that worked for us; those of you with deeper knowledge can likely converge on your own 
  solution to the NGINX configuration.
 
-1. Copy the **nginx/default.conf-template** into **nginx/default.conf**. The default GMOD deployment is to show 
-'galaxy' on the root path of the hostname  (an alternate template setting 'Tripal' as the primary landing page
- still needs to be re-specified here).
+1. First, you need to ensure that you have a copy of the **nginx** web server software installed on your host machine (not 
+just the Docker container). If not, install it like a normal Linux installation, e.g. under Ubuntu:
 
-2. Rename the name _my-divseek-portal-server_ of the _server_name_ parameter and everywhere else that it is found 
-inside the server block, to the _DC_SITE_BASE_HOSTNAME_ hostname you set in your **.env** file 
-(e.g. **sunflower.divseekcanada.ca**).
+```
+sudo apt install nginx
+```
 
-3. Configure _https://_ SSL certificate configuration. Using the [certbot tool](https://certbot.eff.org/) of the free 
+2. In the divseek-canada-portal (a.k.a. **dockerized-gmod-deployment**) project, go into the **nginx** project subfolder and 
+copy over the **nginx/default.conf-template** into **nginx/default.conf** (Note that this default GMOD default.conf NGINX configuraiton has the proxy publish the _galaxy_ service on the root path of the hostname web URL. There is a way to configure NGINX to put Tripal as the root application, but a working alternate _default.conf_ file to do this remains to be specified).
+
+3. Editing the **nginx/default.conf** file, rename the name _my-divseek-portal-server_ of the _server_name_ parameter 
+and everywhere else that it is found inside the server block, to the _DC_SITE_BASE_HOSTNAME_ hostname 
+which you set in your **.env** file (e.g. **sunflower.divseekcanada.ca**).
+
+4. Configure _https://_ SSL certificate configuration. Using the [certbot tool](https://certbot.eff.org/) of the free 
 certificate [LetsEncrypt initiative](https://letsencrypt.org/) is a nice way forward here, but you need to be a 
 bit clever to achieve this since **certbot** generally requires that you specify the web server and operating system 
 you are using so it can make reasonable assumptions about where things should go. This task is facilitated somewhat 
