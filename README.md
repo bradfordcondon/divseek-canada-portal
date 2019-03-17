@@ -242,13 +242,17 @@ The original **dockerized-gmod-deployment** includes a 'proxy' service that runs
  solution to the NGINX configuration.
 
 1. In the divseek-canada-portal (a.k.a. **dockerized-gmod-deployment**) project, go into the **nginx** project subfolder and 
-copy over the **nginx/default.conf-template** into **nginx/default.conf** (Note that this default GMOD default.conf NGINX configuraiton has the proxy publish the _galaxy_ service on the root path of the hostname web URL. There is a way to configure NGINX to put Tripal as the root application, but a working alternate _default.conf_ file to do this remains to be specified).
+copy over the **nginx/default.conf-template** into **nginx/default.conf** (Note that this default GMOD default.conf 
+NGINX configuraiton has the proxy publish the _galaxy_ service on the root path of the hostname web URL. 
+There is a way to configure NGINX to put Tripal as the root application, but a working alternate _default.conf_ 
+file to do this remains to be specified).
 
 2. Editing the **nginx/default.conf** file, rename the name _my-divseek-portal-server_ of the _server_name_ parameter 
 and everywhere else that it is found inside the server block, to the _DC_SITE_BASE_HOSTNAME_ hostname 
 which you set in your **.env** file (e.g. **sunflower.divseekcanada.ca**).  You should make sure that your DNS
 is properly set up to point to your cloud server IP address (usually with an A record) before proceeding 
-to the next (certbot) step of the configuration.
+to the next (certbot) step of the configuration. You may need to wait a short while for your DNS entry to propagate
+through the internet before attempting to run the configuration.
 
 3. Configure _https://_ SSL certificate configuration. Using the [certbot tool](https://certbot.eff.org/) of the free 
 certificate [LetsEncrypt initiative](https://letsencrypt.org/) is a nice way forward here, but you need to be a 
