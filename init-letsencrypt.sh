@@ -80,5 +80,7 @@ docker-compose -f nginx-init-docker-compose.yml run --rm --entrypoint "\
     --force-renewal" certbot
 echo
 
-echo "### Reloading nginx ..."
-docker-compose -f nginx-init-docker-compose.yml exec nginx nginx -s reload
+echo "### Stopping nginx for now..."
+docker-compose -f nginx-init-docker-compose.yml down
+
+echo "### You should now manually edit the final ./nginx/default.conf file to your needs"
