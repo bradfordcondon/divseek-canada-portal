@@ -230,8 +230,9 @@ then customized to point to your actual public host particulars.
 
 ## NGINX Proxy Configuration
 
-The original **dockerized-gmod-deployment** specifies an NGINX configuration under a subfolder _nginx_. Unfortunately, 
-most realistic site deployments (e.g. with https:// SSL configuration, particular hostnames, etc.) generally
+The original **dockerized-gmod-deployment** includes a 'proxy' service that runs the NGINX web server software in a container.
+ To configure this package, the project specifies an NGINX configuration under a subfolder _nginx_. Unfortunately, 
+ most realistic site deployments (e.g. with https:// SSL configuration, particular hostnames, etc.) generally
  necessitates the creation of a customized NGINX file which, although taking the docker compose system into account, 
  needs to also include additional elements, the composition of which this project cannot foresee and hard code 
  (nor parameterize directly, since NGINX doesn't allow for that).  The compromise we've taken here, in the 
@@ -247,9 +248,8 @@ just the Docker container). If not, install it like a normal Linux installation,
 sudo apt install nginx
 ```
 
-2. Copy the **nginx/default.conf-template** into **nginx/default.conf**. The default GMOD deployment is to show 
-'galaxy' on the root path of the hostname  (an alternate template setting 'Tripal' as the primary landing page
- still needs to be re-specified here).
+2. In the divseek-canada-portal (a.k.a. **dockerized-gmod-deployment**) project, go into the **nginx** project subfolder and 
+copy over the **nginx/default.conf-template** into **nginx/default.conf** (Note that this default GMOD default.conf NGINX configuraiton has the proxy publish the _galaxy_ service on the root path of the hostname web URL. There is a way to configure NGINX to put Tripal as the root application, but a working alternate _default.conf_ file to do this remains to be specified).
 
 3. Editing the **nginx/default.conf** file, rename the name _my-divseek-portal-server_ of the _server_name_ parameter 
 and everywhere else that it is found inside the server block, to the _DC_SITE_BASE_HOSTNAME_ hostname 
