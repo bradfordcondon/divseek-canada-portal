@@ -246,7 +246,9 @@ copy over the **nginx/default.conf-template** into **nginx/default.conf** (Note 
 
 2. Editing the **nginx/default.conf** file, rename the name _my-divseek-portal-server_ of the _server_name_ parameter 
 and everywhere else that it is found inside the server block, to the _DC_SITE_BASE_HOSTNAME_ hostname 
-which you set in your **.env** file (e.g. **sunflower.divseekcanada.ca**).
+which you set in your **.env** file (e.g. **sunflower.divseekcanada.ca**).  You should make sure that your DNS
+is properly set up to point to your cloud server IP address (usually with an A record) before proceeding 
+to the next (certbot) step of the configuration.
 
 3. Configure _https://_ SSL certificate configuration. Using the [certbot tool](https://certbot.eff.org/) of the free 
 certificate [LetsEncrypt initiative](https://letsencrypt.org/) is a nice way forward here, but you need to be a 
