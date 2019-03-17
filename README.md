@@ -240,15 +240,22 @@ most realistic site deployments (e.g. with https:// SSL configuration, particula
  protocol is simply one that worked for us; those of you with deeper knowledge can likely converge on your own 
  solution to the NGINX configuration.
 
-1. Copy the **nginx/default.conf-template** into **nginx/default.conf**. The default GMOD deployment is to show 
+1. First, you need to ensure that you have a copy of the **nginx** web server software installed on your host machine (not 
+just the Docker container). If not, install it like a normal Linux installation, e.g. under Ubuntu:
+
+```
+sudo apt install nginx
+```
+
+2. Copy the **nginx/default.conf-template** into **nginx/default.conf**. The default GMOD deployment is to show 
 'galaxy' on the root path of the hostname  (an alternate template setting 'Tripal' as the primary landing page
  still needs to be re-specified here).
 
-2. Editing the **nginx/default.conf** file, rename the name _my-divseek-portal-server_ of the _server_name_ parameter 
+3. Editing the **nginx/default.conf** file, rename the name _my-divseek-portal-server_ of the _server_name_ parameter 
 and everywhere else that it is found inside the server block, to the _DC_SITE_BASE_HOSTNAME_ hostname 
 which you set in your **.env** file (e.g. **sunflower.divseekcanada.ca**).
 
-3. Configure _https://_ SSL certificate configuration. Using the [certbot tool](https://certbot.eff.org/) of the free 
+4. Configure _https://_ SSL certificate configuration. Using the [certbot tool](https://certbot.eff.org/) of the free 
 certificate [LetsEncrypt initiative](https://letsencrypt.org/) is a nice way forward here, but you need to be a 
 bit clever to achieve this since **certbot** generally requires that you specify the web server and operating system 
 you are using so it can make reasonable assumptions about where things should go. This task is facilitated somewhat 
