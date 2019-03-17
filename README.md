@@ -244,9 +244,9 @@ most realistic site deployments (e.g. with https:// SSL configuration, particula
 'galaxy' on the root path of the hostname  (an alternate template setting 'Tripal' as the primary landing page
  still needs to be re-specified here).
 
-2. Rename the name _my-divseek-portal-server_ of the _server_name_ parameter and everywhere else that it is found 
-inside the server block, to the _DC_SITE_BASE_HOSTNAME_ hostname you set in your **.env** file 
-(e.g. **sunflower.divseekcanada.ca**).
+2. Editing the **nginx/default.conf** file, rename the name _my-divseek-portal-server_ of the _server_name_ parameter 
+and everywhere else that it is found inside the server block, to the _DC_SITE_BASE_HOSTNAME_ hostname 
+which you set in your **.env** file (e.g. **sunflower.divseekcanada.ca**).
 
 3. Configure _https://_ SSL certificate configuration. Using the [certbot tool](https://certbot.eff.org/) of the free 
 certificate [LetsEncrypt initiative](https://letsencrypt.org/) is a nice way forward here, but you need to be a 
