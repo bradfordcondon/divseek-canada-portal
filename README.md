@@ -105,7 +105,7 @@ For our installations, we typically use Ubuntu Linux, for which there is an [Ubu
 Note that you should have 'curl' installed first before installing Docker:
 
 ```
-sudo apt-get install curl
+sudo apt install curl
 ```
 
 For other installations, please find instructions specific to your choice of Linux variant, on the Docker site.
