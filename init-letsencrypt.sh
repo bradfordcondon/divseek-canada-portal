@@ -6,6 +6,8 @@
 # This version assumes that the certbot data is under the ./certbot subdirectory and that
 # the domain name is extracted from the user customized .env (dot-env) environmental variables file
 #
+# Note that this script runs a simplified Docker Compose configured by 'nginx-init-docker-compose.yml'.
+#
 hostname=$(egrep -v '^#' .env | grep DC_SITE_BASE_HOSTNAME | xargs -0)
 hostname=${hostname#*=}
 domains=(${hostname})
@@ -34,25 +36,23 @@ fi
 echo "### Creating dummy certificate for $domains ..."
 path="/etc/letsencrypt/live/$domains"
 mkdir -p "$data_path/conf/live/$domains"
-docker-compose run --rm --entrypoint "\
+docker-compose -f nginx-init-docker-compose.yml run --rm --entrypoint "\
   openssl req -x509 -nodes -newkey rsa:1024 -days 1\
     -keyout '$path/privkey.pem' \
     -out '$path/fullchain.pem' \
     -subj '/CN=localhost'" certbot
 echo
 
-
 echo "### Starting nginx ..."
-docker-compose up --force-recreate -d proxy
+docker-compose -f nginx-init-docker-compose.yml up --force-recreate -d nginx
 echo
 
 echo "### Deleting dummy certificate for $domains ..."
-docker-compose run --rm --entrypoint "\
+docker-compose -f nginx-init-docker-compose.yml run --rm --entrypoint "\
   rm -Rf /etc/letsencrypt/live/$domains && \
   rm -Rf /etc/letsencrypt/archive/$domains && \
   rm -Rf /etc/letsencrypt/renewal/$domains.conf" certbot
 echo
-
 
 echo "### Requesting Let's Encrypt certificate for $domains ..."
 #Join $domains to -d args
@@ -70,7 +70,7 @@ esac
 # Enable staging mode if needed
 if [ $staging != "0" ]; then staging_arg="--staging"; fi
 
-docker-compose run --rm --entrypoint "\
+docker-compose -f nginx-init-docker-compose.yml run --rm --entrypoint "\
   certbot certonly --webroot -w /var/www/certbot \
     $staging_arg \
     $email_arg \
@@ -81,4 +81,4 @@ docker-compose run --rm --entrypoint "\
 echo
 
 echo "### Reloading nginx ..."
-docker-compose exec nginx nginx -s reload
+docker-compose -f nginx-init-docker-compose.yml exec nginx nginx -s reload
