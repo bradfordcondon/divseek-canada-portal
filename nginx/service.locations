@@ -23,7 +23,7 @@
 
         # added this following abretaud comment on 20 Dec 2018 at
         # https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment/issues/17
-        # proxy_redirect   /      http://$http_host/galaxy/apollo/;
+        proxy_redirect   /      http://$http_host/galaxy/apollo/;
 
         proxy_redirect   http://remoteuser:5000/apollo      http://$http_host/galaxy/apollo;
         proxy_pass       http://remoteuser:5000/apollo;
