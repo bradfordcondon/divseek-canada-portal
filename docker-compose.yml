@@ -286,8 +286,8 @@ services:
       #
       SITE_NAME:      "${DC_SITE_NAME} ${DC_CROP}"
       BASE_URL_PROTO: "${DC_BASE_URL_PROTO}"
-      BASE_URL_PATH:  "${DC_BASE_URL_PATH}"
-      BASE_URL:       "${DC_BASE_URL_PROTO}${DC_SITE_BASE_HOSTNAME}${DC_BASE_URL_PATH}"
+      BASE_URL_PATH:  "/"
+      BASE_URL:       "${DC_BASE_URL_PROTO}${DC_SITE_BASE_HOSTNAME}/"
       #
       TRIPAL_GIT_CLONE_LIBRARIES: "https://github.com/galaxyproject/blend4php.git"
       TRIPAL_DOWNLOAD_MODULES:    "bootstrap maillog smtp jquery_update panels advanced_help"
