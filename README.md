@@ -226,7 +226,23 @@ docker-compose pull  # Pulls in the required service Docker images
 
 The **docker-compose.yml** is parameterized for (crop) site specific site deployment using environment variables 
 defined in a **.env** file, derived from the available **template.env** file, which needs to be copied into **.env** 
-then customized to point to your actual public host particulars.
+then customized to point to your actual public host particulars. For example, you can change the admin account 
+particulars, i.e.
+
+```
+DC_ADMIN_USER=divseek_admin
+DC_ADMIN_EMAIL=admin@divseekcanada.ca
+```
+
+or perhaps, the site crop, title, hostname, http protocol and Tripal path:
+
+``` 
+DC_CROP=Sunflower
+DC_SITE_NAME="DivSeek Canada - Sunflower"
+DC_SITE_BASE_HOSTNAME=sunflower.divseekcanada.ca
+DC_BASE_URL_PROTO=https://
+DC_BASE_URL_PATH=/tripal
+```
 
 ## NGINX Proxy Configuration
 

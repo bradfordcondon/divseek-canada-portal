@@ -50,7 +50,7 @@ services:
     environment:
       GALAXY_DB_URL: "postgresql://galaxy:galaxy@galaxy:5432/galaxy?client_encoding=utf8&sslmode=disable"
       GALAXY_SECRET: "0xD1v533kCanuck"
-      GXC_BACKEND_URL: "target:8080"
+      GXC_BACKEND_URL: "apollo:8080"
       GXC_LOGLEVEL: DEBUG
     networks:
       divseek:
@@ -62,7 +62,7 @@ services:
     #
     # links:
     #  - galaxy:galaxy
-    #  - apollo:target
+
 
   galaxy: ## Galaxy, yay!
     image: quay.io/galaxy-genome-annotation/docker-galaxy-annotation:master
@@ -272,24 +272,24 @@ services:
       DB_HOST:  "chado"
       DB_NAME: "postgres"
       #
-      SITE_NAME: "${DC_SITE_NAME} ${DC_CROP}"
+      SITE_NAME:      "${DC_SITE_NAME} ${DC_CROP}"
       BASE_URL_PROTO: "${DC_BASE_URL_PROTO}"
-      BASE_URL_PATH: "${DC_BASE_URL_PATH}"
-      BASE_URL: "${DC_BASE_URL_PROTO}${DC_SITE_BASE_HOSTNAME}${DC_BASE_URL_PATH}"
+      BASE_URL_PATH:  "${DC_BASE_URL_PATH}"
+      BASE_URL:       "${DC_BASE_URL_PROTO}${DC_SITE_BASE_HOSTNAME}${DC_BASE_URL_PATH}"
       #
       TRIPAL_GIT_CLONE_LIBRARIES: "https://github.com/galaxyproject/blend4php.git"
-      TRIPAL_DOWNLOAD_MODULES: "bootstrap maillog smtp jquery_update panels advanced_help"
-      TRIPAL_GIT_CLONE_MODULES: "https://github.com/tripal/tripal_jbrowse.git https://github.com/tripal/brapi
-                                 https://github.com/tripal/trpdownload_api
-                                 https://github.com/UofS-Pulse-Binfo/nd_genotypes.git
-                                 https://github.com/UofS-Pulse-Binfo/genotypes_loader.git
-                                 https://github.com/tripal/tripal_jbrowse"
+      TRIPAL_DOWNLOAD_MODULES:    "bootstrap maillog smtp jquery_update panels advanced_help"
+      TRIPAL_GIT_CLONE_MODULES:   "https://github.com/tripal/tripal_jbrowse.git https://github.com/tripal/brapi
+                                   https://github.com/tripal/trpdownload_api
+                                   https://github.com/UofS-Pulse-Binfo/nd_genotypes.git
+                                   https://github.com/UofS-Pulse-Binfo/genotypes_loader.git
+                                   https://github.com/tripal/tripal_jbrowse"
       #
       # Avoiding a strange  runtime error with tripal_bulk_loader by NOT enabling  it for now
       #
       TRIPAL_ENABLE_MODULES: "bootstrap maillog smtp jquery_update panels advanced_help page_manager tracker forum
-                             tripal_jbrowse tripal_galaxy brapi nd_genotypes genotypes_loader tripal_jbrowse_mgmt"
-      #                      tripal_jbrowse tripal_galaxy brapi tripal_bulk_loader nd_genotypes genotypes_loader tripal_jbrowse_mgmt"
+                              tripal_jbrowse tripal_galaxy brapi nd_genotypes genotypes_loader tripal_jbrowse_mgmt"
+      #                       tripal_jbrowse tripal_galaxy brapi tripal_bulk_loader nd_genotypes genotypes_loader tripal_jbrowse_mgmt"
       THEME: "bootstrap"
     ports:
       - "8200:80"
