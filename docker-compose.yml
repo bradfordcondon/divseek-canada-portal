@@ -71,7 +71,7 @@ services:
         GALAXY_LOGGING: full
         GALAXY_CONFIG_BRAND: "GMOD"
         GALAXY_WEBAPOLLO_URL: "http://apollo:8080/apollo"
-        GALAXY_WEBAPOLLO_EXT_URL: "/apollo"
+        GALAXY_WEBAPOLLO_EXT_URL: "/galaxy/apollo"
         GALAXY_WEBAPOLLO_PASSWORD: "password"
         GALAXY_WEBAPOLLO_USER: admin@local.host
         GALAXY_SHARED_DIR: /apollo-data

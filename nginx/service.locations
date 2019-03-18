@@ -6,7 +6,7 @@
 
     # Added a trailing '/' to the apollo location path, following @abretaud and @erasche's comments on 20 Dec 2018 at
     # https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment/issues/17
-    location /apollo/ {
+    location /galaxy/apollo/ {
 
         # added this following abretaud comment on 20 Dec 2018 at
         # https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment/issues/17
