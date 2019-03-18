@@ -4,7 +4,14 @@
     # after the core configuration has been pre-processed
     #
 
-    location /apollo {
+    # Added a trailing '/' to the apollo location path, following abretaud comment on 20 Dec 2018 at
+    # https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment/issues/17
+    location /apollo/ {
+
+        # added this following abretaud comment on 20 Dec 2018 at
+        # https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment/issues/17
+        proxy_set_header REMOTE_USER $remote_user;
+
         proxy_set_header X-Forwarded-Host        $host;
         proxy_set_header X-Forwarded-Server      $host;
         proxy_set_header X-Forwarded-For         $proxy_add_x_forwarded_for;
@@ -13,6 +20,10 @@
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
+
+        # added this following abretaud comment on 20 Dec 2018 at
+        # https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment/issues/17
+        proxy_redirect   /      http://$http_host/apollo/;
 
         proxy_redirect   http://remoteuser:5000/apollo      http://$http_host/apollo;
         proxy_pass       http://remoteuser:5000/apollo;
@@ -31,19 +42,11 @@
         proxy_cookie_path ~*^/([^/]*) /apollo_api/$1;
     }
 
-    location /tripal {
-        proxy_set_header X-Forwarded-Host        $http_host;
-        proxy_set_header X-Forwarded-Server      $host;
-        proxy_set_header X-Forwarded-For         $proxy_add_x_forwarded_for;
-
-        proxy_redirect   http://tripal/tripal      http://$http_host/tripal;
-        proxy_pass       http://tripal/tripal;
-    }
-
     location /pgadmin4 {
-        proxy_set_header X-Forwarded-Host        $http_host;
-        proxy_set_header X-Forwarded-Server      $host;
-        proxy_set_header X-Forwarded-For         $proxy_add_x_forwarded_for;
+
+        proxy_set_header X-Forwarded-Host         $http_host;
+        proxy_set_header X-Forwarded-Server       $host;
+        proxy_set_header X-Forwarded-For          $proxy_add_x_forwarded_for;
 
         proxy_redirect   http://pgadmin4:5050      http://$http_host/pgadmin4;
         proxy_pass       http://pgadmin4:5050;
@@ -129,11 +132,41 @@
         proxy_pass       http://postgraphql-refseqs:5000/;
     }
 
-    location / {
-        proxy_set_header X-Forwarded-Host        $host;
-        proxy_set_header X-Forwarded-Server      $host;
-        proxy_set_header X-Forwarded-For         $proxy_add_x_forwarded_for;
+    #
+    # Old Galaxy-centric, Tripal-subsidiary site locations
+    #
 
+    #
+    #location /tripal {
+    #    proxy_set_header X-Forwarded-Host        $http_host;
+    #    proxy_set_header X-Forwarded-Server      $host;
+    #    proxy_set_header X-Forwarded-For         $proxy_add_x_forwarded_for;
+    #
+    #    proxy_redirect   http://tripal/tripal      http://$http_host/tripal;
+    #    proxy_pass       http://tripal/tripal;
+    #}
+    #
+    #location / {
+    #    proxy_set_header X-Forwarded-Host        $host;
+    #    proxy_set_header X-Forwarded-Server      $host;
+    #    proxy_set_header X-Forwarded-For         $proxy_add_x_forwarded_for;
+    #
+    #    proxy_redirect   http://galaxy       http://$host;
+    #    proxy_pass http://galaxy;
+    #}
+
+    #
+    # New Tripal-Centric, Galaxy-subsidiary site locations
+    #
+
+    location /galaxy {
         proxy_redirect   http://galaxy       http://$host;
-        proxy_pass http://galaxy;
+        proxy_pass http://galaxy/;
+        proxy_cookie_path ~*^/([^/]*) /galaxy/$1;
+        proxy_set_header REMOTE_USER $remote_user;
+    }
+
+    location / {
+        proxy_redirect   http://tripal/tripal/      http://$http_host/tripal/;
+        proxy_pass       http://tripal/tripal/;
     }

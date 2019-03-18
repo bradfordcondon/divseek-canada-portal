@@ -77,6 +77,13 @@ services:
         GALAXY_SHARED_DIR: /apollo-data
         GALAXY_JBROWSE_SHARED_DIR: /jbrowse/data
         GALAXY_ID_SECRET: "0xD1v533kCanuck"
+
+        # added this following abretaud comment on 20 Dec 2018 at
+        # https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment/issues/17
+        GALAXY_CONFIG_COOKIE_PATH: /galaxy
+        GALAXY_CHADO_DBHOST: chado
+        PROXY_PREFIX: /galaxy
+
     networks:
       divseek:
     volumes:
@@ -111,7 +118,12 @@ services:
       WEBAPOLLO_CHADO_DB_PORT: 5432
       WEBAPOLLO_CHADO_DB_NAME: postgres
       # Configure admin user email
-      APOLLO_ADMIN_EMAIL: admin@galaxy.org
+      APOLLO_ADMIN_EMAIL: "${DC_ADMIN_EMAIL}"
+
+      # added this following abretaud comment on 20 Dec 2018 at
+      # https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment/issues/17
+      APOLLO_PATH_PREFIX: "/apollo/"
+
     networks:
       divseek:
     depends_on:
