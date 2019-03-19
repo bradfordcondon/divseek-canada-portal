@@ -71,18 +71,19 @@ services:
         GALAXY_LOGGING: full
         GALAXY_CONFIG_BRAND: "GMOD"
         GALAXY_WEBAPOLLO_URL: "http://apollo:8080/apollo"
-        GALAXY_WEBAPOLLO_EXT_URL: "/galaxy/apollo"
+        GALAXY_WEBAPOLLO_EXT_URL: "/apollo"
         GALAXY_WEBAPOLLO_PASSWORD: "password"
         GALAXY_WEBAPOLLO_USER: admin@local.host
         GALAXY_SHARED_DIR: /apollo-data
         GALAXY_JBROWSE_SHARED_DIR: /jbrowse/data
         GALAXY_ID_SECRET: "0xD1v533kCanuck"
+        GALAXY_CHADO_DBHOST: chado
 
         # added this following abretaud comment on 20 Dec 2018 at
         # https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment/issues/17
-        GALAXY_CONFIG_COOKIE_PATH: /galaxy
-        GALAXY_CHADO_DBHOST: chado
-        PROXY_PREFIX: /galaxy
+        #GALAXY_CONFIG_COOKIE_PATH: /galaxy
+        #PROXY_PREFIX: /galaxy
+        #GALAXY_WEBAPOLLO_EXT_URL: "/galaxy/apollo"
 
     networks:
       divseek:
