@@ -159,27 +159,31 @@ services:
     depends_on:
       - chado
 
-  postgraphql: ## GraphQL interface to Postgres
-    image: erasche/postgraphql:gmod-hacks
-    environment:
-        DB_GRAPHQL_PATH: "/graphql"
-        DB_GRAPHIQL_PATH: "/graphiql"
-        PG_SECRET: "0xD1v533kCanuck"
-        PGUSER: postgres
-        PGPASSWORD: postgres
-        PGHOST: chado
-        PGPORT: 5432
-        PGDATABASE: postgres
-        DB_SCHEMA: "public,chado"
-    #
-    # deprecating links and referring to 'divseek' network?
-    #
-    # links:
-    #    - "chado"
-    networks:
-      divseek:
-    depends_on:
-      - chado
+  #
+  # March 19, 2019 - strange error with PostGraphQL start-up,
+  # so I'll turn it off for now (also in the NGINX service.locations)
+  #
+  #postgraphql: ## GraphQL interface to Postgres
+  #  image: erasche/postgraphql:gmod-hacks
+  #  environment:
+  #      DB_GRAPHQL_PATH: "/graphql"
+  #      DB_GRAPHIQL_PATH: "/graphiql"
+  #      PG_SECRET: "0xD1v533kCanuck"
+  #      PGUSER: postgres
+  #      PGPASSWORD: postgres
+  #      PGHOST: chado
+  #      PGPORT: 5432
+  #      PGDATABASE: postgres
+  #      DB_SCHEMA: "public,chado"
+  #
+  # deprecating links and referring to 'divseek' network?
+  #
+  # links:
+  #    - "chado"
+  #  networks:
+  #    divseek:
+  #  depends_on:
+  #    - chado
 
   postgraphql-refseqs: ## PostGraphQL refseq server (required for JBrowse integration)
     build: refseqs
