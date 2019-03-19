@@ -173,23 +173,28 @@ services:
   #  depends_on:
   #    - chado
 
-  postgraphql-refseqs: ## PostGraphQL refseq server (required for JBrowse integration)
-    build: refseqs
-    environment:
-      PGUSER: postgres
-      PGPASSWORD: postgres
-      PGHOST: chado
-      PGPORT: 5432
-      PGDATABASE: postgres
-    #
-    # deprecating links and referring to 'divseek' network?
-    #
-    # links:
-    #    - "chado:db"
-    networks:
-      divseek:
-    depends_on:
-      - chado
+  #
+  # March 19, 2019 - strange error with PostGraphQL start-up,
+  # so I'll turn it off for now (also in the docker-compose.yml build)
+  # plus all services here calling it (above and below)
+  #
+  #postgraphql-refseqs: ## PostGraphQL refseq server (required for JBrowse integration)
+  #  build: refseqs
+  #  environment:
+  #    PGUSER: postgres
+  #    PGPASSWORD: postgres
+  #    PGHOST: chado
+  #    PGPORT: 5432
+  #    PGDATABASE: postgres
+  #
+  # deprecating links and referring to 'divseek' network?
+  #
+  # links:
+  #    - "chado:db"
+  #  networks:
+  #    divseek:
+  #  depends_on:
+  #    - chado
 
   pgadmin4: ## Postgres Admin Site
     image: thajeztah/pgadmin4

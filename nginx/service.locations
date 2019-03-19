@@ -85,21 +85,22 @@
         proxy_pass       http://postgrest:8000/;
     }
 
-    location /graphiql {
-        proxy_set_header X-Forwarded-Host        $host;
-        proxy_set_header X-Forwarded-Server      $host;
-        proxy_set_header X-Forwarded-For         $proxy_add_x_forwarded_for;
-
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-        add_header 'Access-Control-Allow-Headers' '*';
-
-        proxy_pass       http://postgraphql:5000/graphiql;
-    }
-
     #
     # March 19, 2019 - strange error with PostGraphQL start-up,
     # so I'll turn it off for now (also in the docker-compose.yml build)
+    # plus all services here calling it (above and below)
+    #
+    #location /graphiql {
+    #    proxy_set_header X-Forwarded-Host        $host;
+    #    proxy_set_header X-Forwarded-Server      $host;
+    #    proxy_set_header X-Forwarded-For         $proxy_add_x_forwarded_for;
+    #
+    #    add_header 'Access-Control-Allow-Origin' '*';
+    #    add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+    #    add_header 'Access-Control-Allow-Headers' '*';
+    #
+    #    proxy_pass       http://postgraphql:5000/graphiql;
+    #}
     #
     #location /_postgraphql {
     #    proxy_set_header X-Forwarded-Host        $host;
@@ -112,26 +113,26 @@
     #
     #    proxy_pass       http://postgraphql:5000/_postgraphql;
     #}
-
-    location /graphql {
-        proxy_set_header X-Forwarded-Host        $host;
-        proxy_set_header X-Forwarded-Server      $host;
-        proxy_set_header X-Forwarded-For         $proxy_add_x_forwarded_for;
-
-        add_header 'Access-Control-Allow-Origin' '*';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-        add_header 'Access-Control-Allow-Headers' '*';
-
-        proxy_pass       http://postgraphql:5000/graphql;
-    }
-
-    location /graphql-refseqs {
-        proxy_set_header X-Forwarded-Host        $host;
-        proxy_set_header X-Forwarded-Server      $host;
-        proxy_set_header X-Forwarded-For         $proxy_add_x_forwarded_for;
-
-        proxy_pass       http://postgraphql-refseqs:5000/;
-    }
+    #
+    #location /graphql {
+    #    proxy_set_header X-Forwarded-Host        $host;
+    #    proxy_set_header X-Forwarded-Server      $host;
+    #    proxy_set_header X-Forwarded-For         $proxy_add_x_forwarded_for;
+    #
+    #    add_header 'Access-Control-Allow-Origin' '*';
+    #    add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+    #    add_header 'Access-Control-Allow-Headers' '*';
+    #
+    #    proxy_pass       http://postgraphql:5000/graphql;
+    #}
+    #
+    #location /graphql-refseqs {
+    #    proxy_set_header X-Forwarded-Host        $host;
+    #    proxy_set_header X-Forwarded-Server      $host;
+    #    proxy_set_header X-Forwarded-For         $proxy_add_x_forwarded_for;
+    #
+    #    proxy_pass       http://postgraphql-refseqs:5000/;
+    #}
 
     location / {
         proxy_set_header X-Forwarded-Host        $host;
