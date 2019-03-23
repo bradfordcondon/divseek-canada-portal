@@ -299,19 +299,25 @@ services:
       BASE_URL_PATH:  "${DC_BASE_URL_PATH}"
       BASE_URL:       "${DC_BASE_URL_PROTO}${DC_SITE_BASE_HOSTNAME}${DC_BASE_URL_PATH}"
       #
-      TRIPAL_GIT_CLONE_LIBRARIES: "https://github.com/galaxyproject/blend4php.git"
+      TRIPAL_GIT_CLONE_LIBRARIES: "https://github.com/galaxyproject/blend4php.git https://github.com/SystemDevil/PHP_XLSXWriter_plus.git https://github.com/elastic/elasticsearch-php.git"
+                                  #elasticsearch recommends composer, but maybe this will work too
       TRIPAL_DOWNLOAD_MODULES:    "bootstrap maillog smtp jquery_update panels advanced_help"
-      TRIPAL_GIT_CLONE_MODULES:   "https://github.com/tripal/tripal_jbrowse.git https://github.com/tripal/brapi
+      TRIPAL_GIT_CLONE_MODULES:   "https://github.com/tripal/tripal_jbrowse.git
+                                   https://github.com/tripal/brapi
                                    https://github.com/tripal/trpdownload_api
                                    https://github.com/UofS-Pulse-Binfo/nd_genotypes.git
                                    https://github.com/UofS-Pulse-Binfo/genotypes_loader.git
-                                   https://github.com/tripal/tripal_jbrowse"
-      #
-      # Avoiding a strange  runtime error with tripal_bulk_loader by NOT enabling  it for now
-      #
+                                   https://github.com/tripal/tripal_jbrowse
+                                   https://github.com/uofs-pulse-binfo/vcf_filter
+                                   https://github.com/UofS-Pulse-Binfo/analyzedphenotypes
+                                   https://github.com/tripal/tripal_elasticsearch"
+
       TRIPAL_ENABLE_MODULES: "bootstrap maillog smtp jquery_update panels advanced_help page_manager tracker forum
-                              tripal_jbrowse tripal_galaxy brapi nd_genotypes genotypes_loader tripal_jbrowse_mgmt"
-      #                       tripal_jbrowse tripal_galaxy brapi tripal_bulk_loader nd_genotypes genotypes_loader tripal_jbrowse_mgmt"
+                              tripal_jbrowse tripal_galaxy brapi nd_genotypes genotypes_loader tripal_jbrowse_mgmt
+                              dragndrop_upload vcf_filter analyzedphenotypes tripal_elasticsearch"
+                              #
+                              # Avoiding a strange  runtime error with tripal_bulk_loader by NOT enabling  it for now
+                              # tripal_bulk_loader"
       THEME: "bootstrap"
     ports:
       - "8200:80"
