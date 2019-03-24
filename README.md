@@ -280,7 +280,7 @@ the host name set in your **.env** file) and embedded in our project. If you hav
 then You may therefore run it as follows:
 
 ```
-sudo ./init-letsencrypt.sh.
+sudo ./init-letsencrypt.sh
 ```
 4. You should now go back into the **nginx/default.conf** file and uncomment the directive _include ./services.conf_ to 
 enable inclusion of the full set of NGINX service proxy redirections.
