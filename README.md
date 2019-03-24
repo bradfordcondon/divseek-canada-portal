@@ -28,6 +28,8 @@ some special configuration is likely needed.
 We start by creating a persistent _p4-6gb_ (4 core, 6 GB RAM)  flavour of compute instance. The security group should open up 
 the TCP/IP ports exposed by the various docker instances, as specified in the project's docker-compose.yml file.
 
+**NOTE:** It is important to ensure that the "root" partition gets a sufficiently large disk volume size - typically, at least 20 gigabytes - generally larger than the default image size - which is sometimes as small as 2 gigabytes. This root volume size must be explicitly set during cloud instance launch since it is not generally changeable after the instance has been launched.
+
 ### Docker Image and Volume Storage
 
 By default, the Docker image/volume cache (and other metadata) resides under **/var/lib/docker** which will end up being hosted
