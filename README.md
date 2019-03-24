@@ -83,13 +83,10 @@ sudo mkdir -p /opt/divseekcanada/data/downy-mildew
 sudo mount /dev/vdc /opt/divseekcanada/data/downy-mildew
 sudo mkdir -p /opt/divseekcanada/Sunflower
 sudo mount /dev/vdd /opt/divseekcanada/Sunflower
-
-# test the fstab mount with a 'fake' mounting
-sudo mount -vf
 ```
 
 After completing the above steps, you should configure ```/etc/fstab``` file for system boot up mounting of the new volumes:
-    
+   
     # These volumes need to be auto mounted upon each reboot of the system
     # so you should (carefully) add them to the Linux /etc/fstab file 
     # of the server, something like the following text entries (customize for your crop):
@@ -97,7 +94,9 @@ After completing the above steps, you should configure ```/etc/fstab``` file for
     /dev/vdc        /opt/divseekcanada/data/downy-mildew    ext4    rw,relatime     0       0
     /dev/vdd        /opt/divseekcanada/Sunflower    ext4    rw,relatime     0       0
 
-Now, you can proceed to install Docker and Docker Compose.
+    # test the fstab mount with a 'fake' mounting
+    sudo mount -vf
+    Now, you can proceed to install Docker and Docker Compose.
 
 ## Installation of Docker
 
