@@ -302,9 +302,6 @@ In a new terminal, in the same folder, you can run ```docker-compose logs -f``` 
 docker-compose up -d --build tripal
 
 # It takes a few minutes until you see an apache start-up notification.
-# Build and run the postgraphql-refseqs
-docker-compose up -d --build postgraphql-refseqs
- 
 # Then, run a non-specific compose build to bring up the rest of the services.
 docker-compose up -d         
 ```
