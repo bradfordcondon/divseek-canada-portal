@@ -289,9 +289,10 @@ Now we are set to build the system and fire it up.
 
 ## Running the Docker-Compose Build
 
-It is recommended to first start the databases.
+It is recommended to first start the databases (first making sure that you are in the root project directory for the code):
 
 ```
+cd /opt/divseekcanada/divseek-canada-portal
 docker-compose up -d apollo_db chado # Launches the database containers
 ```
 
