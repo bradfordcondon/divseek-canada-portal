@@ -239,7 +239,7 @@ or perhaps, the site crop, title, hostname, http protocol and Tripal path:
 
 ``` 
 DC_CROP=Sunflower
-DC_SITE_NAME="DivSeek Canada - Sunflower"
+DC_SITE_NAME="DivSeek Canada"
 DC_SITE_BASE_HOSTNAME=sunflower.divseekcanada.ca
 DC_BASE_URL_PROTO=https://
 ```
