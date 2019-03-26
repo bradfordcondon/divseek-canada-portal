@@ -2,6 +2,7 @@
 accounts/
 archive/
 csr/
+keys/
 live/
 options-ssl-nginx.conf
 renewal/
