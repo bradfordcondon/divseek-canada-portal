@@ -83,13 +83,10 @@ sudo mkdir -p /opt/divseekcanada/data/downy-mildew
 sudo mount /dev/vdc /opt/divseekcanada/data/downy-mildew
 sudo mkdir -p /opt/divseekcanada/Sunflower
 sudo mount /dev/vdd /opt/divseekcanada/Sunflower
-
-# test the fstab mount with a 'fake' mounting
-sudo mount -vf
 ```
 
 After completing the above steps, you should configure ```/etc/fstab``` file for system boot up mounting of the new volumes:
-    
+   
     # These volumes need to be auto mounted upon each reboot of the system
     # so you should (carefully) add them to the Linux /etc/fstab file 
     # of the server, something like the following text entries (customize for your crop):
@@ -97,7 +94,9 @@ After completing the above steps, you should configure ```/etc/fstab``` file for
     /dev/vdc        /opt/divseekcanada/data/downy-mildew    ext4    rw,relatime     0       0
     /dev/vdd        /opt/divseekcanada/Sunflower    ext4    rw,relatime     0       0
 
-Now, you can proceed to install Docker and Docker Compose.
+    # test the fstab mount with a 'fake' mounting
+    sudo mount -vf
+    Now, you can proceed to install Docker and Docker Compose.
 
 ## Installation of Docker
 
@@ -240,7 +239,7 @@ or perhaps, the site crop, title, hostname, http protocol and Tripal path:
 
 ``` 
 DC_CROP=Sunflower
-DC_SITE_NAME="DivSeek Canada - Sunflower"
+DC_SITE_NAME="DivSeek Canada"
 DC_SITE_BASE_HOSTNAME=sunflower.divseekcanada.ca
 DC_BASE_URL_PROTO=https://
 ```
@@ -281,7 +280,7 @@ the host name set in your **.env** file) and embedded in our project. If you hav
 then You may therefore run it as follows:
 
 ```
-sudo ./init-letsencrypt.sh.
+sudo ./init-letsencrypt.sh
 ```
 4. You should now go back into the **nginx/default.conf** file and uncomment the directive _include ./services.conf_ to 
 enable inclusion of the full set of NGINX service proxy redirections.
@@ -290,9 +289,10 @@ Now we are set to build the system and fire it up.
 
 ## Running the Docker-Compose Build
 
-It is recommended to first start the databases.
+It is recommended to first start the databases (first making sure that you are in the root project directory for the code):
 
 ```
+cd /opt/divseekcanada/divseek-canada-portal
 docker-compose up -d apollo_db chado # Launches the database containers
 ```
 
@@ -303,9 +303,6 @@ In a new terminal, in the same folder, you can run ```docker-compose logs -f``` 
 docker-compose up -d --build tripal
 
 # It takes a few minutes until you see an apache start-up notification.
-# Build and run the postgraphql-refseqs
-docker-compose up -d --build postgraphql-refseqs
- 
 # Then, run a non-specific compose build to bring up the rest of the services.
 docker-compose up -d         
 ```
