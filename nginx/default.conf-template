@@ -25,7 +25,7 @@ server {
     listen [::]:443 ssl;
     listen 443 ssl;
 
-    client_max_body_size 100M;
+    client_max_body_size 150M;
 
     server_name my-divseek-portal-server;
 
