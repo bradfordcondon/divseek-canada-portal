@@ -212,17 +212,6 @@ As of March 2019, the DivSeek Canada Portal customizes a git fork of the
 The core of the customization is in the Docker Compose build file (**docker-compose.yml**) on the 
 **divseek-canada-build** branch. Prior to running the build, however, some configuration tasks need to be completed.
 
-## Docker Compose Preliminaries
-
-The general project launch steps noted in the  
-[original GMOD deployment project README](https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment/README.md) 
-are otherwise followed, albeit with the **divseek-canada-build** customized _docker-compose.yml_ file. To start off 
-which, we can pre-load our Docker system with the required pre-built images, as follows:
-
-```
-docker-compose pull  # Pulls in the required service Docker images
-```
-
 ## Docker Compose Parameter Setting
 
 The **docker-compose.yml** is parameterized for (crop) site specific site deployment using environment variables 
@@ -242,6 +231,17 @@ DC_CROP=Sunflower
 DC_SITE_NAME="DivSeek Canada"
 DC_SITE_BASE_HOSTNAME=sunflower.divseekcanada.ca
 DC_BASE_URL_PROTO=https://
+```
+
+## Docker Compose Preliminaries
+
+The general project launch steps noted in the  
+[original GMOD deployment project README](https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment/README.md) 
+are otherwise followed, albeit with the **divseek-canada-build** customized _docker-compose.yml_ file. To start off 
+which, we can pre-load our Docker system with the required pre-built images, as follows:
+
+```
+docker-compose pull  # Pulls in the required service Docker images
 ```
 
 ## NGINX Proxy Configuration
