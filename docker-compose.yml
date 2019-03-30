@@ -302,7 +302,8 @@ services:
       TRIPAL_GIT_CLONE_LIBRARIES: "https://github.com/galaxyproject/blend4php.git
                                    https://github.com/SystemDevil/PHP_XLSXWriter_plus.git
                                    https://github.com/elastic/elasticsearch-php.git
-                                   https://github.com/d3/d3.git"
+                                   https://github.com/SystemDevil/PHP_XLSXWriter_plus.git
+                                   https://github.com/d3/d3/releases/download/v3.5.14/d3.zip"
                                   #elasticsearch recommends composer, but maybe this will work too
       TRIPAL_DOWNLOAD_MODULES:    "bootstrap maillog smtp jquery_update panels advanced_help"
       TRIPAL_GIT_CLONE_MODULES:   "https://github.com/tripal/tripal_jbrowse.git
