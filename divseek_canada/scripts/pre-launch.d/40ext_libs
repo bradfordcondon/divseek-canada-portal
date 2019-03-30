@@ -1,4 +1,5 @@
 # This script will ensure all required modules are installed and enabled
+# DivSeek Canada override version with D3.js
 
 cd /var/www/html/
 
@@ -17,7 +18,7 @@ if [[ ! $(ls -A /var/www/html/sites/all/libraries/) ]]; then
     composer require "elasticsearch/elasticsearch:~5.0"
 
     # Some Tripal modules require D3.js
-    composer require "d3/d3:latest"
+    composer require "d3/d3:v3.5.14"
 
     cd /var/www/html/
 fi
