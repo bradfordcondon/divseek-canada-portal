@@ -25,6 +25,8 @@ server {
     listen [::]:443 ssl;
     listen 443 ssl;
 
+    client_max_body_size 150M;
+
     server_name my-divseek-portal-server;
 
     ssl_certificate /etc/letsencrypt/live/my-divseek-portal-server/fullchain.pem;

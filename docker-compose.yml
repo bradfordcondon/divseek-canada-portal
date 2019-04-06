@@ -71,18 +71,19 @@ services:
         GALAXY_LOGGING: full
         GALAXY_CONFIG_BRAND: "GMOD"
         GALAXY_WEBAPOLLO_URL: "http://apollo:8080/apollo"
-        GALAXY_WEBAPOLLO_EXT_URL: "/galaxy/apollo"
+        GALAXY_WEBAPOLLO_EXT_URL: "/apollo"
         GALAXY_WEBAPOLLO_PASSWORD: "password"
         GALAXY_WEBAPOLLO_USER: admin@local.host
         GALAXY_SHARED_DIR: /apollo-data
         GALAXY_JBROWSE_SHARED_DIR: /jbrowse/data
         GALAXY_ID_SECRET: "0xD1v533kCanuck"
+        GALAXY_CHADO_DBHOST: chado
 
         # added this following abretaud comment on 20 Dec 2018 at
         # https://github.com/galaxy-genome-annotation/dockerized-gmod-deployment/issues/17
-        GALAXY_CONFIG_COOKIE_PATH: /galaxy
-        GALAXY_CHADO_DBHOST: chado
-        PROXY_PREFIX: /galaxy
+        #GALAXY_CONFIG_COOKIE_PATH: /galaxy
+        #PROXY_PREFIX: /galaxy
+        #GALAXY_WEBAPOLLO_EXT_URL: "/galaxy/apollo"
 
     networks:
       divseek:
@@ -159,45 +160,54 @@ services:
     depends_on:
       - chado
 
-  postgraphql: ## GraphQL interface to Postgres
-    image: erasche/postgraphql:gmod-hacks
-    environment:
-        DB_GRAPHQL_PATH: "/graphql"
-        DB_GRAPHIQL_PATH: "/graphiql"
-        PG_SECRET: "0xD1v533kCanuck"
-        PGUSER: postgres
-        PGPASSWORD: postgres
-        PGHOST: chado
-        PGPORT: 5432
-        PGDATABASE: postgres
-        DB_SCHEMA: "public,chado"
-    #
-    # deprecating links and referring to 'divseek' network?
-    #
-    # links:
-    #    - "chado"
-    networks:
-      divseek:
-    depends_on:
-      - chado
+  #
+  # March 19, 2019 - strange error with PostGraphQL start-up,
+  # so I'll turn it off for now (also in the NGINX service.locations)
+  #
+  #postgraphql: ## GraphQL interface to Postgres
+  #  image: erasche/postgraphql:gmod-hacks
+  #  environment:
+  #      DB_GRAPHQL_PATH: "/graphql"
+  #      DB_GRAPHIQL_PATH: "/graphiql"
+  #      PG_SECRET: "0xD1v533kCanuck"
+  #      PGUSER: postgres
+  #      PGPASSWORD: postgres
+  #      PGHOST: chado
+  #      PGPORT: 5432
+  #      PGDATABASE: postgres
+  #      DB_SCHEMA: "public,chado"
+  #
+  # deprecating links and referring to 'divseek' network?
+  #
+  # links:
+  #    - "chado"
+  #  networks:
+  #    divseek:
+  #  depends_on:
+  #    - chado
 
-  postgraphql-refseqs: ## PostGraphQL refseq server (required for JBrowse integration)
-    build: refseqs
-    environment:
-      PGUSER: postgres
-      PGPASSWORD: postgres
-      PGHOST: chado
-      PGPORT: 5432
-      PGDATABASE: postgres
-    #
-    # deprecating links and referring to 'divseek' network?
-    #
-    # links:
-    #    - "chado:db"
-    networks:
-      divseek:
-    depends_on:
-      - chado
+  #
+  # March 19, 2019 - strange error with PostGraphQL start-up,
+  # so I'll turn it off for now (also in the docker-compose.yml build)
+  # plus all services here calling it (above and below)
+  #
+  #postgraphql-refseqs: ## PostGraphQL refseq server (required for JBrowse integration)
+  #  build: refseqs
+  #  environment:
+  #    PGUSER: postgres
+  #    PGPASSWORD: postgres
+  #    PGHOST: chado
+  #    PGPORT: 5432
+  #    PGDATABASE: postgres
+  #
+  # deprecating links and referring to 'divseek' network?
+  #
+  # links:
+  #    - "chado:db"
+  #  networks:
+  #    divseek:
+  #  depends_on:
+  #    - chado
 
   pgadmin4: ## Postgres Admin Site
     image: thajeztah/pgadmin4
@@ -286,22 +296,36 @@ services:
       #
       SITE_NAME:      "${DC_SITE_NAME}"
       BASE_URL_PROTO: "${DC_BASE_URL_PROTO}"
-      #BASE_URL_PATH:  "/"
-      BASE_URL:       "${DC_BASE_URL_PROTO}${DC_SITE_BASE_HOSTNAME}"
+      BASE_URL_PATH:  "${DC_BASE_URL_PATH}"
+      BASE_URL:       "${DC_BASE_URL_PROTO}${DC_SITE_BASE_HOSTNAME}${DC_BASE_URL_PATH}"
       #
-      TRIPAL_GIT_CLONE_LIBRARIES: "https://github.com/galaxyproject/blend4php.git"
+      TRIPAL_GIT_CLONE_LIBRARIES: "https://github.com/galaxyproject/blend4php.git
+                                   https://github.com/SystemDevil/PHP_XLSXWriter_plus.git
+                                   https://github.com/elastic/elasticsearch-php.git
+                                   https://github.com/d3/d3.git"
+                                  #elasticsearch recommends composer, but maybe this will work too
       TRIPAL_DOWNLOAD_MODULES:    "bootstrap maillog smtp jquery_update panels advanced_help"
-      TRIPAL_GIT_CLONE_MODULES:   "https://github.com/tripal/tripal_jbrowse.git https://github.com/tripal/brapi
-                                   https://github.com/tripal/trpdownload_api
-                                   https://github.com/UofS-Pulse-Binfo/nd_genotypes.git
-                                   https://github.com/UofS-Pulse-Binfo/genotypes_loader.git
-                                   https://github.com/tripal/tripal_jbrowse"
-      #
-      # Avoiding a strange  runtime error with tripal_bulk_loader by NOT enabling  it for now
-      #
+      TRIPAL_GIT_CLONE_MODULES:   "https://github.com/tripal/tripal_jbrowse.git
+                                   https://github.com/tripal/brapi.git
+                                   https://github.com/tripal/trpdownload_api.git
+                                   https://github.com/tripal/tripal_jbrowse.git
+                                   https://github.com/uofs-pulse-binfo/vcf_filter.git
+                                   https://github.com/UofS-Pulse-Binfo/analyzedphenotypes.git
+                                   https://github.com/tripal/tripal_elasticsearch.git
+                                   https://github.com/tripal/trpfancy_fields.git"
+                                   #https://github.com/UofS-Pulse-Binfo/nd_genotypes.git
+                                   #https://github.com/UofS-Pulse-Binfo/genotypes_loader.git"
+
       TRIPAL_ENABLE_MODULES: "bootstrap maillog smtp jquery_update panels advanced_help page_manager tracker forum
-                              tripal_jbrowse tripal_galaxy brapi nd_genotypes genotypes_loader tripal_jbrowse_mgmt"
-      #                       tripal_jbrowse tripal_galaxy brapi tripal_bulk_loader nd_genotypes genotypes_loader tripal_jbrowse_mgmt"
+                              tripal_jbrowse tripal_galaxy brapi tripal_jbrowse_mgmt
+                              trpfancy_fields dragndrop_upload vcf_filter analyzedphenotypes tripal_elasticsearch"
+                              #
+                              # ignore nd_genotypes for now...
+                              #
+                              #nd_genotypes genotypes_loader
+                              #
+                              # Avoiding a strange  runtime error with tripal_bulk_loader by NOT enabling it for now
+                              # tripal_bulk_loader"
       THEME: "bootstrap"
     ports:
       - "8200:80"
